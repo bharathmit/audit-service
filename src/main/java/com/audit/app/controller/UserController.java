@@ -21,6 +21,10 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+    VerificationTokenRepo tokenRepository;
+	
+	
 	@RequestMapping(method=RequestMethod.POST)
 	public UserDto  saveUser(@RequestBody @Valid UserDto reqObject, BindingResult bindingResult){
 		//same we have to do in custom validation
@@ -29,6 +33,42 @@ public class UserController {
 		}
 		return userService.saveUser(reqObject);	
 	}
+	
+	
+	@RequestMapping(value = "/account-activation", method = RequestMethod.GET)
+	public UserDto createUserActivationToken(@RequestParam("emailId") final String emailId) {
+		return userService.createUserActivationToken(emailId);
+	}
+	
+	@RequestMapping(value = "/confirm-account", method = RequestMethod.GET)
+	public UserDto confirmUserActivationToken(@RequestParam("token") final String token) {
+		return userService.confirmUserActivationToken(token);
+	}
+	
+	@RequestMapping(value = "/change-password", method = RequestMethod.GET)
+	public ResponseResource changePassword(@RequestBody UserDto userDto) {
+		// verify with old password, If not match error throw
+		stringDigester.matches(customerObject.getPassword(), customerObject.getPassword());
+		
+		return userService.changePassword(userDto);
+	}
+	
+	@RequestMapping(value = "/password-creation", method = RequestMethod.GET)
+	public ResponseResource passwordCreation(@RequestBody UserDto userDto) {		
+		return userService.changePassword(userDto);
+	}
+	
+	@RequestMapping(value="/forgot-password",method = RequestMethod.GET)
+	public Object  forgotPassword(@RequestParam("emailId") final String emailId){
+		return userService.forgotPassword(emailId);
+	}
+	
+	@RequestMapping(value = "/confirm-password", method = RequestMethod.GET)
+    public Object confirmPassword(@RequestParam("token") final String token) {
+		return userService.confirmPassword(token);
+	}
+	
+	
 	
 	/*//mobile & email unique ===> user exit with status flag msg
 	@RequestMapping(value="/userexit",method=RequestMethod.POST)

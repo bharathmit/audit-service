@@ -43,6 +43,9 @@ public class UserService {
     @Autowired
     StringDigester stringDigester;
     
+    @Autowired
+    VerificationTokenRepo tokenRepository;
+    
     
     @Transactional
     public UserDto saveUser(UserDto userObject) {
@@ -86,8 +89,141 @@ public class UserService {
         resultObject = (UserDto) ModelEntityMapper.converObjectToPoJo(entityObject, UserDto.class);
         return resultObject;
     }
+    
+    public UserDto createUserActivationToken(String emailId) {
+    	
+    	UserDto user=exitEmail(emailId);
+    	
+    	if (StringUtils.isEmpty(user)) {
+    		throw new BusinessException(ErrorDescription.USER_NOT_EXIT.getMessage());
+        }
+    	
+    	if(user.getStatus()==Status.Active)) {
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ACTIVE.getMessage());
+    	}
+    	
+    	
+    	emailUserActivationToken(userEntity);
+    	return user;
+    }
+    
+    
+    public UserDto confirmUserActivationToken(String token){
+		final VerificationToken verificationToken = getVerificationToken(token);
+		if (verificationToken == null) {
+			return new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
+		}
 
-    //not used
+		final Customer customer = verificationToken.getCustomer();
+		final Calendar cal = Calendar.getInstance();
+		if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+			return new BusinessException(ErrorDescription.TIME_OUT.getMessage());
+		}
+		
+		if(user.getStatus()==Status.Active)) {
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ACTIVE.getMessage());
+    	}
+		
+		customer.setStatus(Status.Active);
+		customerRepo.saveAndFlush(customer);
+		return new ResponseResource(ErrorCodeDescription.TRANSACTION_SUCCESS);
+	}
+    
+    public VerificationToken getVerificationToken(String VerificationToken){
+		return tokenRepository.findByToken(VerificationToken);
+	}
+    
+    
+    @Async
+    public boolean emailUserActivationToken(User userEntity){
+		String token = UUID.randomUUID().toString();
+		createUserActivationToken(userEntity,token);
+		
+		
+		EmailDto emailRequest=new EmailDto();
+		
+		emailRequest.setTo(customerEntity.getEmailId());
+		emailRequest.setSubject("Welcome Email");
+		emailRequest.setTemplateLocation("templates/welcomeEmail.vm");
+		
+		Map model=new HashMap();
+		String appUrl = "http://localhost:8095/customer/regitrationConfirm?token=" + token;;
+		model.put("api", appUrl);
+		
+		emailRequest.setModel(model);
+		
+		return emailService.constructEmailMessage(emailRequest);
+	}
+    
+    
+    public void createUserActivationToken(final User userEntity, final String token) {
+        final VerificationToken myToken = new VerificationToken(token, userEntity,TokenType.AccountActivation);
+        tokenRepository.save(myToken);
+    }
+    
+    
+	public CustomerDto changePassword(CustomerDto customerObject) {
+		Customer customerEntity = (Customer) ModelEntityMapper.converObjectToPoJo(customerObject, Customer.class);
+		customerRepo.save(customerEntity);
+		return customerObject;
+	}
+	
+	public UserDto createUserPasswordToken(String emailId) {
+    	
+    	UserDto user=exitEmail(emailId);
+    	
+    	if (StringUtils.isEmpty(user)) {
+    		throw new BusinessException(ErrorDescription.USER_NOT_EXIT.getMessage());
+        }
+    	
+    	if(user.getStatus()==Status.Blocked)) {
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_BLOCKED.getMessage());
+    	}
+    	
+    	
+    	emailForgotPasswordToken(userEntity);
+    	return user;
+    }
+	
+	@Async
+	public boolean emailForgotPasswordToken(Customer customerEntity){
+		String token = UUID.randomUUID().toString();
+		createForgotPasswordTokenForCustomer(customerEntity,token);
+		
+		
+		EmailDto emailRequest=new EmailDto();
+		
+		emailRequest.setTo(customerEntity.getEmailId());
+		emailRequest.setSubject("Welcome Email");
+		emailRequest.setTemplateLocation("templates/welcomeEmail.vm");
+		
+		Map model=new HashMap();
+		String appUrl = "http://localhost:8095/customer/passwordConfirm?token=" + token;;
+		model.put("api", appUrl);
+		
+		emailRequest.setModel(model);
+		
+		
+		
+		return emailService.constructEmailMessage(emailRequest);
+	}
+	
+    
+	 public UserDto confirmUserPasswordToken(String token){
+			final VerificationToken verificationToken = getVerificationToken(token);
+			if (verificationToken == null) {
+				return new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
+			}
+
+			final Customer customer = verificationToken.getCustomer();
+			final Calendar cal = Calendar.getInstance();
+			if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+				return new BusinessException(ErrorDescription.TIME_OUT.getMessage());
+			}			
+			return new ResponseResource(ErrorCodeDescription.TRANSACTION_SUCCESS);
+		}
+    
+    
     public UserDto exitEmail(String emailId) {
     	UserDto resultObject = new UserDto();
         User entityObject = userRepo.findByEmailId(emailId.trim());
