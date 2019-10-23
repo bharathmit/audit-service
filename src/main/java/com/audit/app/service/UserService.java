@@ -20,6 +20,8 @@ import com.audit.app.dto.UserDto;
 import com.audit.app.dto.UserRoleDto;
 import com.audit.app.entity.User;
 import com.audit.app.entity.UserRole;
+import com.audit.app.exception.BusinessException;
+import com.audit.app.exception.response.ErrorDescription;
 import com.audit.app.repo.UserJPARepo;
 import com.audit.app.repo.UserRoleJPARepo;
 import com.audit.app.utils.ModelEntityMapper;
@@ -48,7 +50,7 @@ public class UserService {
     	UserDto user=findUser(userObject.getEmailId(),userObject.getMobile());
         
     	if (!StringUtils.isEmpty(user)) {
-            return null;
+    		throw new BusinessException(ErrorDescription.USER_EXIT.getMessage());
         }
 
         /** Password Encry */
@@ -64,10 +66,8 @@ public class UserService {
 
         userObject.setUserId(userEntity.getUserId());
 
-        if (!deleteUserRole(userObject.getUserId())) {
-            return null;
-        }
-
+        deleteUserRole(userObject.getUserId());
+        
         for (UserRoleDto roleUser : userObject.getUserRoles()) {
 
             UserRole userRoleEntity = (UserRole) ModelEntityMapper.converObjectToPoJo(roleUser, UserRole.class);
@@ -87,6 +87,7 @@ public class UserService {
         return resultObject;
     }
 
+    //not used
     public UserDto exitEmail(String emailId) {
     	UserDto resultObject = new UserDto();
         User entityObject = userRepo.findByEmailId(emailId.trim());
@@ -94,6 +95,7 @@ public class UserService {
         return resultObject;
     }
 
+    //not used
     public UserDto exitMobile(String mobileNumber) {
     	UserDto resultObject = new UserDto();
         User entityObject = userRepo.findByMobile(mobileNumber.trim());
@@ -101,6 +103,7 @@ public class UserService {
         return resultObject;
     }
     
+    //not used
     @Transactional
     public boolean loginUpdate(UserDto user){
     	if(userRepo.loginUpdate(user.getUserId(),new Date())>0){
@@ -118,7 +121,7 @@ public class UserService {
 
         int row = session.createQuery(hsql).executeUpdate();
 
-        log.info("Number of User Role Delete from DB == " + row);
+        log.info("Number of User Role Delete from DB {} ", row);
         return true;
     }
 
