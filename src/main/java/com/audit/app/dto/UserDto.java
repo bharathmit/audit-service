@@ -39,7 +39,7 @@ public class UserDto implements Serializable  {
 	private String password;
 	
 	@Getter	@Setter	
-	private String confirmPassword;
+	private String oldPassword;
 	
 	@Getter	@Setter	
 	private String otherName;

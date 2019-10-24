@@ -1,7 +1,9 @@
 
 package com.audit.app.service;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,19 +13,24 @@ import org.jasypt.digest.StringDigester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.audit.app.constants.Status;
+import com.audit.app.constants.TokenType;
+import com.audit.app.dto.ResponseResource;
 import com.audit.app.dto.UserDto;
 import com.audit.app.dto.UserRoleDto;
 import com.audit.app.entity.User;
 import com.audit.app.entity.UserRole;
+import com.audit.app.entity.VerificationToken;
 import com.audit.app.exception.BusinessException;
 import com.audit.app.exception.response.ErrorDescription;
 import com.audit.app.repo.UserJPARepo;
 import com.audit.app.repo.UserRoleJPARepo;
+import com.audit.app.repo.VerificationTokenRepo;
 import com.audit.app.utils.ModelEntityMapper;
 
 @Service
@@ -50,7 +57,7 @@ public class UserService {
     @Transactional
     public UserDto saveUser(UserDto userObject) {
     	
-    	UserDto user=findUser(userObject.getEmailId(),userObject.getMobile());
+    	UserDto user=findByEmailId(userObject.getEmailId());
         
     	if (!StringUtils.isEmpty(user)) {
     		throw new BusinessException(ErrorDescription.USER_EXIT.getMessage());
@@ -82,51 +89,44 @@ public class UserService {
         return userObject;
     }
     
-
-    public UserDto findUser(String emailId,String mobile) {
-        UserDto resultObject = new UserDto();
-        User entityObject = userRepo.findByEmailIdOrMobile(emailId.trim(),mobile.trim());
-        resultObject = (UserDto) ModelEntityMapper.converObjectToPoJo(entityObject, UserDto.class);
-        return resultObject;
-    }
-    
-    public UserDto createUserActivationToken(String emailId) {
+    public ResponseResource createUserActivationToken(String emailId) {
     	
-    	UserDto user=exitEmail(emailId);
+    	User user = userRepo.findByEmailId(emailId.trim());
     	
     	if (StringUtils.isEmpty(user)) {
     		throw new BusinessException(ErrorDescription.USER_NOT_EXIT.getMessage());
         }
     	
-    	if(user.getStatus()==Status.Active)) {
-    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ACTIVE.getMessage());
+    	if(user.getStatus()==Status.Active || user.getStatus()==Status.Blocked) {
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_INACTIVE.getMessage());
     	}
     	
-    	
-    	emailUserActivationToken(userEntity);
-    	return user;
+    	emailUserActivationToken(user);
+    	return new ResponseResource(ErrorDescription.USER_ACTIVATE_EMAIL);
     }
     
     
     public UserDto confirmUserActivationToken(String token){
 		final VerificationToken verificationToken = getVerificationToken(token);
-		if (verificationToken == null) {
-			return new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
+		if (StringUtils.isEmpty(verificationToken)) {
+			throw new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
 		}
 
-		final Customer customer = verificationToken.getCustomer();
+		final User user = verificationToken.getUser();
 		final Calendar cal = Calendar.getInstance();
 		if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-			return new BusinessException(ErrorDescription.TIME_OUT.getMessage());
+			throw new BusinessException(ErrorDescription.TIME_OUT.getMessage());
 		}
 		
-		if(user.getStatus()==Status.Active)) {
-    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ACTIVE.getMessage());
+		if(user.getStatus()==Status.Active || user.getStatus()==Status.Blocked) {
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_INACTIVE.getMessage());
     	}
+
+		user.setStatus(Status.Active);
+		userRepo.saveAndFlush(user);
 		
-		customer.setStatus(Status.Active);
-		customerRepo.saveAndFlush(customer);
-		return new ResponseResource(ErrorCodeDescription.TRANSACTION_SUCCESS);
+		UserDto userDto = (UserDto) ModelEntityMapper.converObjectToPoJo(user, UserDto.class);
+		return userDto;
 	}
     
     public VerificationToken getVerificationToken(String VerificationToken){
@@ -137,10 +137,10 @@ public class UserService {
     @Async
     public boolean emailUserActivationToken(User userEntity){
 		String token = UUID.randomUUID().toString();
-		createUserActivationToken(userEntity,token);
+		createUserToken(userEntity,token,TokenType.AccountActivation);
 		
 		
-		EmailDto emailRequest=new EmailDto();
+		/*EmailDto emailRequest=new EmailDto();
 		
 		emailRequest.setTo(customerEntity.getEmailId());
 		emailRequest.setSubject("Welcome Email");
@@ -152,46 +152,47 @@ public class UserService {
 		
 		emailRequest.setModel(model);
 		
-		return emailService.constructEmailMessage(emailRequest);
+		return emailService.constructEmailMessage(emailRequest);*/
+		return true;
 	}
     
     
-    public void createUserActivationToken(final User userEntity, final String token) {
-        final VerificationToken myToken = new VerificationToken(token, userEntity,TokenType.AccountActivation);
+    public void createUserToken(final User userEntity, final String token,TokenType tokenType) {
+        final VerificationToken myToken = new VerificationToken(token, userEntity,tokenType);
         tokenRepository.save(myToken);
     }
     
     
-	public CustomerDto changePassword(CustomerDto customerObject) {
-		Customer customerEntity = (Customer) ModelEntityMapper.converObjectToPoJo(customerObject, Customer.class);
-		customerRepo.save(customerEntity);
-		return customerObject;
+	public ResponseResource changePassword(UserDto userObject) {
+		userRepo.passwordUpdate(userObject.getUserId(),userObject.getPassword(),new Date());
+		return new ResponseResource(ErrorDescription.USER_PASSWORD_CHANGE);
 	}
 	
-	public UserDto createUserPasswordToken(String emailId) {
+	public ResponseResource createUserPasswordToken(String emailId) {
     	
-    	UserDto user=exitEmail(emailId);
+		User user = userRepo.findByEmailId(emailId.trim());
     	
     	if (StringUtils.isEmpty(user)) {
     		throw new BusinessException(ErrorDescription.USER_NOT_EXIT.getMessage());
         }
     	
-    	if(user.getStatus()==Status.Blocked)) {
+    	if(user.getStatus()!=Status.Active) {
     		throw new BusinessException(ErrorDescription.USER_ACCOUNT_BLOCKED.getMessage());
     	}
     	
     	
-    	emailForgotPasswordToken(userEntity);
-    	return user;
+    	emailForgotPasswordToken(user);
+    	
+    	return new ResponseResource(ErrorDescription.USER_PASSWORD_EMAIL);
     }
 	
 	@Async
-	public boolean emailForgotPasswordToken(Customer customerEntity){
+	public boolean emailForgotPasswordToken(User userEntity){
 		String token = UUID.randomUUID().toString();
-		createForgotPasswordTokenForCustomer(customerEntity,token);
+		createUserToken(userEntity,token,TokenType.ForgotPassword);
 		
 		
-		EmailDto emailRequest=new EmailDto();
+		/*EmailDto emailRequest=new EmailDto();
 		
 		emailRequest.setTo(customerEntity.getEmailId());
 		emailRequest.setSubject("Welcome Email");
@@ -202,47 +203,39 @@ public class UserService {
 		model.put("api", appUrl);
 		
 		emailRequest.setModel(model);
-		
-		
-		
-		return emailService.constructEmailMessage(emailRequest);
+	
+		return emailService.constructEmailMessage(emailRequest);*/
+		return true;
 	}
 	
     
 	 public UserDto confirmUserPasswordToken(String token){
 			final VerificationToken verificationToken = getVerificationToken(token);
-			if (verificationToken == null) {
-				return new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
+			if (StringUtils.isEmpty(verificationToken)) {
+				throw new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
 			}
 
-			final Customer customer = verificationToken.getCustomer();
+			final User user = verificationToken.getUser();
 			final Calendar cal = Calendar.getInstance();
 			if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-				return new BusinessException(ErrorDescription.TIME_OUT.getMessage());
-			}			
-			return new ResponseResource(ErrorCodeDescription.TRANSACTION_SUCCESS);
+				throw new BusinessException(ErrorDescription.TIME_OUT.getMessage());
+			}	
+			
+			UserDto userDto = (UserDto) ModelEntityMapper.converObjectToPoJo(user, UserDto.class);
+			return userDto;
 		}
     
     
-    public UserDto exitEmail(String emailId) {
+    public UserDto findByEmailId(String emailId) {
     	UserDto resultObject = new UserDto();
         User entityObject = userRepo.findByEmailId(emailId.trim());
         resultObject = (UserDto) ModelEntityMapper.converObjectToPoJo(entityObject, UserDto.class);
         return resultObject;
     }
-
-    //not used
-    public UserDto exitMobile(String mobileNumber) {
-    	UserDto resultObject = new UserDto();
-        User entityObject = userRepo.findByMobile(mobileNumber.trim());
-        resultObject = (UserDto) ModelEntityMapper.converObjectToPoJo(entityObject, UserDto.class);
-        return resultObject;
-    }
     
-    //not used
     @Transactional
-    public boolean loginUpdate(UserDto user){
-    	if(userRepo.loginUpdate(user.getUserId(),new Date())>0){
+    public boolean loginUpdate(Long userId){
+    	if(userRepo.loginUpdate(userId,new Date())>0){
     		return true;
     	}
 		return false;
@@ -254,9 +247,7 @@ public class UserService {
     public boolean deleteUserRole(Long userId) {
         Session session = (Session) entityManager.getDelegate();
         String hsql = " delete from UserRole where user_Id= " + userId + " ";
-
         int row = session.createQuery(hsql).executeUpdate();
-
         log.info("Number of User Role Delete from DB {} ", row);
         return true;
     }
@@ -299,25 +290,7 @@ public class UserService {
         }
     }
     
-    public ResponseResource changePassword(UserDto userDto){
-		try {
-
-			UserDto user = findEmailId(userDto.getEmailId());
-			log.info("Check the Password");
-			if(!stringDigester.matches(userDto.getPassword(),user.getPassword())){
-				return new ResponseResource(ErrorCodeDescription.INVALID_PASSWORD);
-			}
-		
-			
-			if(userRepo.passwordUpdate(userDto.getUserId(),stringDigester.digest(userDto.getConfirmPassword()))>0){
-				return new ResponseResource(ErrorCodeDescription.TRANSACTION_SUCCESS);
-			}
-            
-        } catch (Exception e) {
-            throw new RestException(ErrorCodeDescription.TRANSACTION_FAILED);
-        }
-		return new ResponseResource(ErrorCodeDescription.TRANSACTION_FAILED);
-	}*/
+   */
     
     
 

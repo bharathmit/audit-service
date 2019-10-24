@@ -1,4 +1,4 @@
-/*package com.audit.app.controller;
+package com.audit.app.controller;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,57 +16,46 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.audit.app.dto.LoginDto;
-import com.audit.app.dto.LoginResponseDto;
-import com.audit.app.exception.BadRequestException;
-import com.audit.app.exception.ErrorResource;
+import com.audit.app.dto.UserDto;
 import com.audit.app.exception.InvalidRequestException;
-import com.audit.app.security.TokenAuthenticationService;
 import com.audit.app.service.LoginService;
-
-import lombok.extern.log4j.Log4j;
+import com.cable.rest.dto.LoginResponseDto;
+import com.cable.rest.exception.BadRequestException;
+import com.cable.rest.response.ErrorResource;
+import com.cable.rest.security.TokenAuthenticationService;
 
 @RestController
 @RequestMapping("/login")
-@Log4j
-public class LoginController{
+public class LoginController {
 	
-	*//**initialize the AtomicInteger class*//*
+	/**initialize the AtomicInteger class*/
     AtomicInteger ctr=new AtomicInteger(1);
     
     @Autowired
-    LoginService loginService;
+    LoginService LoginService;
 	
-	 *//** This method validates whether the provided user is authorized*//*
+	 /** This method validates whether the provided user is authorized*/
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public @ResponseBody LoginResponseDto login(@RequestBody @Valid LoginDto loginDto,BindingResult bindingResult, HttpServletResponse JWTresponse) 
+    public @ResponseBody UserDto login(@RequestBody @Valid LoginDto loginDto,BindingResult bindingResult, HttpServletResponse JWTresponse) 
     {
     	
     	if (bindingResult.hasErrors()){
-			log.info("Request Validation Call");
+			//log.info("Http Request Validation Called");
 			throw new InvalidRequestException("Exception", bindingResult);
 		}
 		
-    	Object response= loginService.loginUser(loginDto);
-    	
-    	if(response.getClass() == ErrorResource.class){
-    		log.info("Service Exception Call");
-			throw new BadRequestException("Exception", (ErrorResource)response);
-		}
-    	
-        LoginResponseDto loginRespDto =(LoginResponseDto) response;
+    	UserDto userDto=LoginService.loginUser(loginDto);
+
+    	String JWTtoken=TokenAuthenticationService.addAuthentication(loginRespDto.getUser().getLoginId(), loginRespDto.getUser());
+    	JWTresponse.addHeader(TokenAuthenticationService.HEADER_STRING, TokenAuthenticationService.TOKEN_PREFIX + " " + JWTtoken);
         
-        if (loginRespDto !=null && loginRespDto.isAuthenticationStatus() == true) {
-        	String JWTtoken=TokenAuthenticationService.addAuthentication(loginRespDto.getUser().getEmailId(), loginRespDto.getUser());
-        	JWTresponse.addHeader(TokenAuthenticationService.HEADER_STRING, TokenAuthenticationService.TOKEN_PREFIX + " " + JWTtoken);
-            
-            log.info("LoginController.login method End");
+        //log.info("LoginController.login method End");
         
-        }
         return loginRespDto;	
     }
 	
     
-    *//** This method invalidate the session whether the provided user is*//*
+    /** This method invalidate the session whether the provided user is*/
     // authorized
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public void logout(HttpServletRequest request) {
@@ -79,4 +68,3 @@ public class LoginController{
 	
 
 }
-*/

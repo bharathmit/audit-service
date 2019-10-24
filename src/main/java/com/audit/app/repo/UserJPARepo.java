@@ -16,17 +16,13 @@ public interface UserJPARepo extends JpaRepository< User, Long>{
 	
 	public User findByEmailId(String emailId);
 	
-	public User findByMobile(String mobile);
-	
-	public User findByEmailIdOrMobile(String emailId,String mobile);
-	
 	@Modifying(clearAutomatically = true)
 	@Query("update User a SET a.lastLoginDate=:lastLoginDate  where a.userId = :userId")
     public int loginUpdate(@Param("userId") Long userId,@Param("lastLoginDate") Date lastLoginDate);
 	
 	@Modifying(clearAutomatically = true)
-	@Query("update User a SET a.password=:password  where a.userId = :userId")
-    public int passwordUpdate(@Param("userId") Long userId,@Param("password") String password);
+	@Query("update User a SET a.password=:password , a.passwordChangeDate=:passwordChangeDate where a.userId = :userId")
+    public int passwordUpdate(@Param("userId") Long userId,@Param("password") String password,@Param("passwordChangeDate") Date passwordChangeDate);
 
 
 }

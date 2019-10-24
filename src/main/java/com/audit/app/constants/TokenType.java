@@ -1,4 +1,4 @@
-package com.cable.rest.constants;
+package com.audit.app.constants;
 
 public enum TokenType {
 	

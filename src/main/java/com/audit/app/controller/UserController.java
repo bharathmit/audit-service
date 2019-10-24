@@ -2,15 +2,21 @@ package com.audit.app.controller;
 
 import javax.validation.Valid;
 
+import org.jasypt.digest.StringDigester;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.audit.app.dto.ResponseResource;
 import com.audit.app.dto.UserDto;
+import com.audit.app.exception.BusinessException;
 import com.audit.app.exception.InvalidRequestException;
+import com.audit.app.exception.response.ErrorDescription;
+import com.audit.app.repo.VerificationTokenRepo;
 import com.audit.app.service.UserService;
 
 @RestController
@@ -24,6 +30,9 @@ public class UserController {
 	@Autowired
     VerificationTokenRepo tokenRepository;
 	
+	@Autowired
+	StringDigester stringDigester;
+	
 	
 	@RequestMapping(method=RequestMethod.POST)
 	public UserDto  saveUser(@RequestBody @Valid UserDto reqObject, BindingResult bindingResult){
@@ -36,7 +45,7 @@ public class UserController {
 	
 	
 	@RequestMapping(value = "/account-activation", method = RequestMethod.GET)
-	public UserDto createUserActivationToken(@RequestParam("emailId") final String emailId) {
+	public ResponseResource createUserActivationToken(@RequestParam("emailId") final String emailId) {
 		return userService.createUserActivationToken(emailId);
 	}
 	
@@ -47,9 +56,11 @@ public class UserController {
 	
 	@RequestMapping(value = "/change-password", method = RequestMethod.GET)
 	public ResponseResource changePassword(@RequestBody UserDto userDto) {
-		// verify with old password, If not match error throw
-		stringDigester.matches(customerObject.getPassword(), customerObject.getPassword());
-		
+		UserDto user=userService.findByEmailId(userDto.getEmailId());
+		if(!stringDigester.matches(userDto.getOldPassword(),user.getPassword())){
+			throw new BusinessException(ErrorDescription.INVALID_PASSWORD.getMessage());
+		}
+		userService.changePassword(userDto);
 		return userService.changePassword(userDto);
 	}
 	
@@ -59,24 +70,17 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/forgot-password",method = RequestMethod.GET)
-	public Object  forgotPassword(@RequestParam("emailId") final String emailId){
-		return userService.forgotPassword(emailId);
+	public ResponseResource  forgotPassword(@RequestParam("emailId") final String emailId){
+		return userService.createUserPasswordToken(emailId);
 	}
 	
 	@RequestMapping(value = "/confirm-password", method = RequestMethod.GET)
-    public Object confirmPassword(@RequestParam("token") final String token) {
-		return userService.confirmPassword(token);
+    public UserDto confirmPassword(@RequestParam("token") final String token) {
+		return userService.confirmUserPasswordToken(token);
 	}
 	
 	
-	
-	/*//mobile & email unique ===> user exit with status flag msg
-	@RequestMapping(value="/userexit",method=RequestMethod.POST)
-	public boolean  exitUser(@RequestBody UserDto reqObject){
-		return userService.exitEmail(reqObject.getEmailId());
-	}
-	
-	@RequestMapping(value="/userlist",method=RequestMethod.POST)
+	/*@RequestMapping(value="/userlist",method=RequestMethod.POST)
 	public Object getUser(@RequestBody UserSearch searchObject){
 		return userService.getUser(searchObject);
 	}
@@ -84,19 +88,8 @@ public class UserController {
 	@RequestMapping(value="/deleteuser",method=RequestMethod.POST)
 	public Object deleteUser(@RequestBody UserSearch searchObject){
 		return userService.deleteUser(searchObject);
-	}
-	
-	@RequestMapping(value="/changePassword",method=RequestMethod.POST)
-	public Object  changePassword(@RequestBody UserDto reqObject){
-		return userService.changePassword(reqObject);
 	}*/
 	
-	
-	
-	
-	
-	
-	// user login ===> update login time & if reset password flag is true, change the password page. if email id not verified error msg & able to generate new email verify link.
 	
 
 }
