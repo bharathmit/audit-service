@@ -12,7 +12,7 @@
 	<artifactId>audit-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>audit-service</name>
-	<description>Demo project for Spring Boot</description>
+	<description>audit restfull service for Spring Boot project</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -49,6 +49,11 @@
 		    <version>${jwt.version}</version>
 		</dependency>
 		
+		<dependency>
+		    <groupId>com.github.ulisesbocchio</groupId>
+		    <artifactId>jasypt-spring-boot</artifactId>
+		    <version>${jasypt.version}</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -71,17 +76,24 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
-
+		
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
-			<optional>true</optional>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${org.modelmapper.version}</version>
+			<scope>compile</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
 		
@@ -95,19 +107,6 @@
 					<artifactId>junit-vintage-engine</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-			<version>${org.modelmapper.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		
-		<dependency>
-		    <groupId>com.github.ulisesbocchio</groupId>
-		    <artifactId>jasypt-spring-boot</artifactId>
-		    <version>2.0.0</version>
 		</dependency>
 		
 	</dependencies>
