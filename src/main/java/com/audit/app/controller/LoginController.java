@@ -18,11 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.audit.app.dto.LoginDto;
 import com.audit.app.dto.UserDto;
 import com.audit.app.exception.InvalidRequestException;
+import com.audit.app.security.TokenAuthenticationService;
 import com.audit.app.service.LoginService;
-import com.cable.rest.dto.LoginResponseDto;
-import com.cable.rest.exception.BadRequestException;
-import com.cable.rest.response.ErrorResource;
-import com.cable.rest.security.TokenAuthenticationService;
 
 @RestController
 @RequestMapping("/login")
@@ -46,22 +43,13 @@ public class LoginController {
 		
     	UserDto userDto=LoginService.loginUser(loginDto);
 
-    	String JWTtoken=TokenAuthenticationService.addAuthentication(loginRespDto.getUser().getLoginId(), loginRespDto.getUser());
-    	JWTresponse.addHeader(TokenAuthenticationService.HEADER_STRING, TokenAuthenticationService.TOKEN_PREFIX + " " + JWTtoken);
+    	String JWTtoken=TokenAuthenticationService.addAuthentication(loginDto.getEmailId(), userDto);
+    	
+    	//JWTresponse.addHeader(TokenAuthenticationService.HEADER_STRING, TokenAuthenticationService.TOKEN_PREFIX + " " + JWTtoken);
         
         //log.info("LoginController.login method End");
         
-        return loginRespDto;	
-    }
-	
-    
-    /** This method invalidate the session whether the provided user is*/
-    // authorized
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public void logout(HttpServletRequest request) {
-        log.info("Logged out called");
-        HttpSession session = request.getSession(true);
-        session.invalidate();
+        return userDto;	
     }
 	
 	

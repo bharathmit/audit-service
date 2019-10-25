@@ -3,6 +3,8 @@ package com.audit.app.service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -20,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import com.audit.app.constants.Status;
 import com.audit.app.constants.TokenType;
+import com.audit.app.dto.EmailDto;
 import com.audit.app.dto.ResponseResource;
 import com.audit.app.dto.UserDto;
 import com.audit.app.dto.UserRoleDto;
@@ -52,6 +55,9 @@ public class UserService {
     
     @Autowired
     VerificationTokenRepo tokenRepository;
+    
+    @Autowired
+    EmailNotificationService emailService;
     
     
     @Transactional
@@ -135,25 +141,30 @@ public class UserService {
     
     
     @Async
-    public boolean emailUserActivationToken(User userEntity){
+    public void emailUserActivationToken(User userEntity){
 		String token = UUID.randomUUID().toString();
 		createUserToken(userEntity,token,TokenType.AccountActivation);
 		
 		
-		/*EmailDto emailRequest=new EmailDto();
+		EmailDto emailRequest=new EmailDto();
 		
-		emailRequest.setTo(customerEntity.getEmailId());
+		emailRequest.setTo(userEntity.getEmailId());
 		emailRequest.setSubject("Welcome Email");
-		emailRequest.setTemplateLocation("templates/welcomeEmail.vm");
+		emailRequest.setTemplateLocation("email-template");
+		emailRequest.setFrom("bharathkumar.feb14@gmail.com");
 		
 		Map model=new HashMap();
-		String appUrl = "http://localhost:8095/customer/regitrationConfirm?token=" + token;;
+		String appUrl = "http://localhost:8080/user/confirm-account?token=" + token;;
 		model.put("api", appUrl);
+		
+		model.put("name", "Memorynotfound.com");
+	    model.put("location", "Belgium");
+	    model.put("signature", "https://memorynotfound.com");
+		
 		
 		emailRequest.setModel(model);
 		
-		return emailService.constructEmailMessage(emailRequest);*/
-		return true;
+		emailService.sendEmailMessage(emailRequest);
 	}
     
     
