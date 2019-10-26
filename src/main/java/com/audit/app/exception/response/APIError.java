@@ -1,7 +1,11 @@
 package com.audit.app.exception.response;
 
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -12,9 +16,11 @@ import lombok.Setter;
 public class APIError {
 	
 	@Getter	@Setter	
-	private String status;
+	private HttpStatus status;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss") 
 	@Getter	@Setter	
-	private String timestamp;
+	private Date timestamp;
 	@Getter	@Setter	
 	private String error;
 	@Getter	@Setter	
@@ -30,6 +36,7 @@ public class APIError {
 	public APIError(String error, String message) {
         this.error = error;
         this.message = message;
+        this.timestamp=new Date();
     }
 	
 	

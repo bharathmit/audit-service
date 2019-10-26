@@ -4,6 +4,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,9 @@ import com.audit.app.service.LoginService;
 @RequestMapping("/login")
 public class LoginController {
 	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+	
 	/**initialize the AtomicInteger class*/
     AtomicInteger ctr=new AtomicInteger(1);
     
@@ -32,9 +37,9 @@ public class LoginController {
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public LoginResponseDto login(@RequestBody @Valid LoginDto loginDto,BindingResult bindingResult) 
     {
-    	
+    	log.info("user login controller called");
     	if (bindingResult.hasErrors()){
-			//log.info("Http Request Validation Called");
+			log.info("Http Request Validation Error");
 			throw new InvalidRequestException("Exception", bindingResult);
 		}
     	LoginResponseDto loginRespDto =new LoginResponseDto();
