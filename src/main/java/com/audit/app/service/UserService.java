@@ -173,9 +173,9 @@ public class UserService {
         tokenRepository.save(myToken);
     }
     
-    
+    @Transactional
 	public ResponseResource changePassword(UserDto userObject) {
-		userRepo.passwordUpdate(userObject.getUserId(),userObject.getPassword(),new Date());
+		userRepo.passwordUpdate(userObject.getUserId(),stringDigester.digest(userObject.getPassword()),new Date());
 		return new ResponseResource(ErrorDescription.USER_PASSWORD_CHANGE);
 	}
 	
@@ -198,25 +198,30 @@ public class UserService {
     }
 	
 	@Async
-	public boolean emailForgotPasswordToken(User userEntity){
+	public void emailForgotPasswordToken(User userEntity){
 		String token = UUID.randomUUID().toString();
 		createUserToken(userEntity,token,TokenType.ForgotPassword);
 		
 		
-		/*EmailDto emailRequest=new EmailDto();
+		EmailDto emailRequest=new EmailDto();
 		
-		emailRequest.setTo(customerEntity.getEmailId());
-		emailRequest.setSubject("Welcome Email");
-		emailRequest.setTemplateLocation("templates/welcomeEmail.vm");
+		emailRequest.setTo(userEntity.getEmailId());
+		emailRequest.setSubject("Forgot Password");
+		emailRequest.setTemplateLocation("email-template");
+		emailRequest.setFrom("no-reply@gstp.com");
 		
 		Map model=new HashMap();
-		String appUrl = "http://localhost:8095/customer/passwordConfirm?token=" + token;;
+		String appUrl = "http://localhost:8080/account/confirm-password?token=" + token;;
 		model.put("api", appUrl);
 		
+		model.put("name", "Memorynotfound.com");
+	    model.put("location", "Belgium");
+	    model.put("signature", "https://memorynotfound.com");
+		
+		
 		emailRequest.setModel(model);
-	
-		return emailService.constructEmailMessage(emailRequest);*/
-		return true;
+		
+		emailService.sendEmailMessage(emailRequest);
 	}
 	
     

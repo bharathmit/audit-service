@@ -33,7 +33,7 @@ public class LoginService {
     		throw new BusinessException(ErrorDescription.USER_ACCOUNT_BLOCKED.getMessage());
     	}
 
-		if(!stringDigester.matches(userDto.getPassword(),loginDto.getPassword())){
+		if(!stringDigester.matches(loginDto.getPassword(),userDto.getPassword())){
 			throw new BusinessException(ErrorDescription.INVALID_PASSWORD.getMessage());
 		}
 		
