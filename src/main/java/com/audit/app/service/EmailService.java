@@ -18,7 +18,7 @@ import com.audit.app.dto.EmailDto;
 import lombok.extern.log4j.Log4j;
 
 @Service
-public class EmailNotificationService {
+public class EmailService {
 	
 	@Autowired
 	private JavaMailSender mailSender;
@@ -33,7 +33,7 @@ public class EmailNotificationService {
 	                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
 	                StandardCharsets.UTF_8.name());
 	        
-	        helper.addAttachment("logo.png", new ClassPathResource("memorynotfound-logo.png"));
+	        //helper.addAttachment("logo.png", new ClassPathResource("memorynotfound-logo.png"));
 	        
 	        Context context = new Context();
 	        context.setVariables(mail.getModel());

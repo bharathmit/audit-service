@@ -1,7 +1,5 @@
 package com.audit.app.controller;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -25,14 +23,10 @@ import com.audit.app.service.LoginService;
 public class LoginController {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-	
-	/**initialize the AtomicInteger class*/
-    AtomicInteger ctr=new AtomicInteger(1);
     
     @Autowired
     LoginService LoginService;
-	
+    
 	 /** This method validates whether the provided user is authorized*/
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public LoginResponseDto login(@RequestBody @Valid LoginDto loginDto,BindingResult bindingResult) 

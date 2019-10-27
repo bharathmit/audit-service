@@ -57,7 +57,7 @@ public class UserService {
     VerificationTokenRepo tokenRepository;
     
     @Autowired
-    EmailNotificationService emailService;
+    EmailService emailService;
     
     
     @Transactional
