@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: audit-service
+          
+info:
+  app:
+    name: Spring boot audit service Application
+    description: ${info.app.name} is Running on ${server.port} port
+      
+server:
+  port: 8080 

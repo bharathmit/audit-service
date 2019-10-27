@@ -2,11 +2,8 @@ package com.audit.app;
 
 import java.nio.charset.StandardCharsets;
 
-import javax.sql.DataSource;
-
 import org.jasypt.digest.PooledStringDigester;
 import org.jasypt.digest.StringDigester;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -15,22 +12,10 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
 @SpringBootApplication
 @EncryptablePropertySource("application.properties")
 public class AuditServiceApplication {
-
-	@Value("${spring.datasource.url}")
-	private String dbUrl;
-
-	@Bean
-	public DataSource dataSource() {
-		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl(dbUrl);
-		return new HikariDataSource(config);
-	}
 
 	@Bean
 	public SpringTemplateEngine springTemplateEngine() {

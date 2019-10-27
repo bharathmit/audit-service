@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				// account activation & verify urls permitted
 				.and().authorizeRequests().antMatchers("/account/**").permitAll()
 				// public urls permitted
-				.and().authorizeRequests().antMatchers("/public/**").permitAll()
+				.and().authorizeRequests().antMatchers("/h2-console/**").permitAll()
 				// All urls must be authenticated (filter for token always fires (/**)
 				.and().authorizeRequests().anyRequest().authenticated()
 				// don't create session
@@ -34,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and().exceptionHandling().authenticationEntryPoint(unauthenticationEntryPoint)
 				// And filter other requests to check the presence of JWT in header
 				.and().addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.headers().frameOptions().disable();
 
 	}
 
