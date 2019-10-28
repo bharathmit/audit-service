@@ -20,14 +20,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 				// we don't need CSRF because our token is invulnerable
 				.csrf().disable()
-				// Login urls permitted
-				.authorizeRequests().antMatchers("/login/**").permitAll()
-				// account activation & verify urls permitted
-				.and().authorizeRequests().antMatchers("/account/**").permitAll()
-				// public urls permitted
-				.and().authorizeRequests().antMatchers("/h2-console/**").permitAll()
-				// All urls must be authenticated (filter for token always fires (/**)
-				.and().authorizeRequests().anyRequest().authenticated()
+                //	api authenticate with jwt token			
+				.authorizeRequests().antMatchers("/api/**").authenticated()
+				//permitted all other urls
+				.anyRequest().permitAll()
 				// don't create session
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				// Call our errorHandler if authentication/authorisation fails
