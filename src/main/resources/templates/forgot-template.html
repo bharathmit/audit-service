@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns="http://www.w3.org/1999/xhtml">
+<body style="margin: 0; padding: 0;">
+
+	<table border="0" width="100%">
+		<tbody>
+			<tr>
+				<td valign="top"><img alt="GST Cloud" /></td>
+			</tr>
+			<tr>
+				<td valign="top">&nbsp;</td>
+			</tr>
+			<tr>
+				<td valign="top">
+					<table border="0" width="100%">
+						<tbody>
+							<tr>
+								<td>
+									<p>Someone (hopefully you) has requested a password reset
+										for your GST account. Follow the link below to set a new
+										password:</p>
+									<p th:text="${appUrl}"></p>
+								</td>
+							</tr>
+							<tr>
+								<td>If you don't wish to reset your password, disregard
+									this email and no action will be taken. <br />
+									<p>Regards,<br />
+										The GST Cloud Team <br /> <a href="https://jsoftgroup.wordpress.com">https://jsoftgroup.wordpress.com</a>
+									</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+</body>
+</html>

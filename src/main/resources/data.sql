@@ -1,4 +1,4 @@
-INSERT INTO ROLE VALUES (1,1, CURRENT_DATE(),1, CURRENT_DATE(),CURRENT_TIMESTAMP,'Client','Active'); 
+INSERT INTO ROLE VALUES (1,1, CURRENT_DATE(),1, CURRENT_DATE(),CURRENT_TIMESTAMP,'User','Active'); 
 
 
 INSERT INTO USER( user_id, first_name, mobile, email_id , gender, marital_status, gstp_number, status, created_by, created_date)  VALUES 

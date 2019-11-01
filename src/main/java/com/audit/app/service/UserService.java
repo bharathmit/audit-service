@@ -15,6 +15,8 @@ import org.jasypt.digest.StringDigester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +60,9 @@ public class UserService {
     
     @Autowired
     EmailService emailService;
+    
+    @Value("${webapp.api}")
+    String apiUrl; 
     
     
     @Transactional
@@ -149,18 +154,13 @@ public class UserService {
 		EmailDto emailRequest=new EmailDto();
 		
 		emailRequest.setTo(userEntity.getEmailId());
-		emailRequest.setSubject("Welcome Email");
-		emailRequest.setTemplateLocation("email-template");
-		emailRequest.setFrom("bharathkumar.feb14@gmail.com");
+		emailRequest.setSubject("Verify Email Address");
+		emailRequest.setTemplateLocation("emailverify-template");
+		emailRequest.setFrom("no-reply@gstp.com");
 		
 		Map model=new HashMap();
-		String appUrl = "http://localhost:8080/user/confirm-account?token=" + token;;
-		model.put("api", appUrl);
-		
-		model.put("name", "Memorynotfound.com");
-	    model.put("location", "Belgium");
-	    model.put("signature", "https://memorynotfound.com");
-		
+		String appUrl = apiUrl+"user/confirm-account?token=" + token;;
+		model.put("appUrl", appUrl);
 		
 		emailRequest.setModel(model);
 		
@@ -206,17 +206,13 @@ public class UserService {
 		EmailDto emailRequest=new EmailDto();
 		
 		emailRequest.setTo(userEntity.getEmailId());
-		emailRequest.setSubject("Forgot Password");
-		emailRequest.setTemplateLocation("email-template");
+		emailRequest.setSubject("Reset your GSTP Cloud password");
+		emailRequest.setTemplateLocation("forgot-template");
 		emailRequest.setFrom("no-reply@gstp.com");
 		
 		Map model=new HashMap();
-		String appUrl = "http://localhost:8080/account/confirm-password?token=" + token;;
-		model.put("api", appUrl);
-		
-		model.put("name", "Memorynotfound.com");
-	    model.put("location", "Belgium");
-	    model.put("signature", "https://memorynotfound.com");
+		String appUrl = apiUrl+"account/confirm-password?token=" + token;;
+		model.put("appUrl", appUrl);
 		
 		
 		emailRequest.setModel(model);
