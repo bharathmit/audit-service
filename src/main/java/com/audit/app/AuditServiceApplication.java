@@ -1,8 +1,6 @@
 package com.audit.app;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.jasypt.digest.PooledStringDigester;
 import org.jasypt.digest.StringDigester;
@@ -21,14 +19,14 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 
 @SpringBootApplication
 @EnableSwagger2
-@EncryptablePropertySource("application.properties")
+@EncryptablePropertySource({"application.properties","application.yml"})
 public class AuditServiceApplication {
 	
 	@Bean
@@ -74,7 +72,6 @@ public class AuditServiceApplication {
 	}
 
 	public static void main(String[] args) {
-		System.setProperty("jasypt.encryptor.password", "bharath");
 		SpringApplication.run(AuditServiceApplication.class, args);
 	}
 
