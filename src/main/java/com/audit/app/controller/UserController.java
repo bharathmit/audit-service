@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.audit.app.dto.ResponseResource;
@@ -36,14 +37,13 @@ public class UserController {
 		return userService.saveUser(reqObject);
 	}
 
-	@RequestMapping(value = "/change-password", method = RequestMethod.GET)
-	public ResponseResource changePassword(@RequestBody UserDto userDto) {
-		UserDto user = userService.findByEmailId(userDto.getEmailId());
-		if (!stringDigester.matches(userDto.getOldPassword(), user.getPassword())) {
+	@RequestMapping(value = "/change-password", method = RequestMethod.PUT)
+	public ResponseResource changePassword(@RequestParam("emailId") final String emailId,@RequestParam("oldPassword") final String oldPassword, @RequestParam("password") final String password) {
+		UserDto user = userService.findByEmailId(emailId);
+		if (!stringDigester.matches(oldPassword, user.getPassword())) {
 			throw new BusinessException(ErrorDescription.INVALID_PASSWORD.getMessage());
 		}
-		userService.changePassword(userDto);
-		return userService.changePassword(userDto);
+		return userService.changePassword(emailId,password);
 	}
 
 	/*

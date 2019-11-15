@@ -21,8 +21,8 @@ public interface UserJPARepo extends JpaRepository< User, Long>{
     public int loginUpdate(@Param("userId") Long userId,@Param("lastLoginDate") Date lastLoginDate);
 	
 	@Modifying(clearAutomatically = true)
-	@Query("update User a SET a.password=:password , a.passwordChangeDate=:passwordChangeDate where a.userId = :userId")
-    public int passwordUpdate(@Param("userId") Long userId,@Param("password") String password,@Param("passwordChangeDate") Date passwordChangeDate);
+	@Query("update User a SET a.password=:password , a.passwordChangeDate=:passwordChangeDate where a.emailId = :emailId")
+    public int passwordUpdate(@Param("emailId") String emailId,@Param("password") String password,@Param("passwordChangeDate") Date passwordChangeDate);
 
 
 }

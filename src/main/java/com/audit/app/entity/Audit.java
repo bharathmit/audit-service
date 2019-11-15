@@ -26,11 +26,11 @@ public abstract class Audit implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Temporal( TemporalType.TIMESTAMP)
-	@Column(name="created_date", nullable=false)
+	@Column(name="created_date", nullable=false,updatable=false)
 	@Getter	@Setter	
 	private Date createdDate;
 	
-	@Column(name="created_by", nullable=false)
+	@Column(name="created_by", nullable=false,updatable=false)
 	@Getter	@Setter	
 	private Long createdBy;
 
@@ -43,9 +43,10 @@ public abstract class Audit implements Serializable{
 	@Getter	@Setter	
 	private Long lastModifiedBy;
 	
-	@Column(name="time_stamp", nullable=true,columnDefinition="timestamp default current_timestamp on update current_timestamp")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="time_stamp", nullable=false,columnDefinition="timestamp default current_timestamp on update current_timestamp")
 	@Getter	@Setter	
-	private Date timeStamp ;
+	private Date timeStamp = new Date();
 
 
 	@PrePersist

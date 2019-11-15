@@ -16,7 +16,7 @@ public enum ErrorDescription {
 	INVALID_USER("Incorrect UserName"),
 	INVALID_PASSWORD("Incorrect Password"),
 	MOBILE_EXIT("Mobile Number Already Exit"),
-	INVALID_TOKEN("Incoorrect Registration confirmation Token"),
+	INVALID_TOKEN("Incoorrect confirmation Token"),
 	TIME_OUT("Registration confirmation Token Expiryed"),
 	
 	USER_ACTIVATE_EMAIL("Activation link sent to your email id."),

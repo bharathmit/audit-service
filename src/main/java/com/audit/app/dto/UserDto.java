@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotNull;
-
 import com.audit.app.constants.Gender;
 import com.audit.app.constants.MaritalStatus;
 import com.audit.app.constants.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
@@ -35,11 +33,9 @@ public class UserDto implements Serializable  {
 	@Getter	@Setter	
 	private String lastName;
 	
-	@Getter	@Setter	
+	@Getter(onMethod = @__( @JsonIgnore ))
+	@Setter	
 	private String password;
-	
-	@Getter	@Setter	
-	private String oldPassword;
 	
 	@Getter	@Setter	
 	private String otherName;

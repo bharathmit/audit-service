@@ -78,9 +78,13 @@ public class User extends Audit implements Serializable{
 	@Getter	@Setter	
 	private MaritalStatus maritalStatus;
 	
-	@Column(unique=true,nullable=false)
+	@Column
 	@Getter	@Setter	
 	private String gstpNumber;
+	
+	@Column
+	@Getter	@Setter	
+	private String otherName;
 	
 	@Column(length = 65535,columnDefinition="Text")
 	@Getter	@Setter	

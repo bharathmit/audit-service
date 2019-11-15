@@ -1,8 +1,6 @@
 package com.audit.app.controller;
 
-import org.jasypt.digest.StringDigester;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,8 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.audit.app.dto.ResponseResource;
 import com.audit.app.dto.UserDto;
-import com.audit.app.exception.BusinessException;
-import com.audit.app.exception.response.ErrorDescription;
 import com.audit.app.repo.VerificationTokenRepo;
 import com.audit.app.service.UserService;
 
@@ -35,9 +31,9 @@ public class AccountController {
 		return userService.confirmUserActivationToken(token);
 	}
 
-	@RequestMapping(value = "/password-creation", method = RequestMethod.POST)
-	public ResponseResource passwordCreation(@RequestBody UserDto userDto) {
-		return userService.changePassword(userDto);
+	@RequestMapping(value = "/password-creation", method = RequestMethod.PUT)
+	public ResponseResource passwordCreation(@RequestParam("emailId") final String emailId,@RequestParam("password") final String password) {
+		return userService.changePassword(emailId,password);
 	}
 
 	@RequestMapping(value = "/forgot-password", method = RequestMethod.GET)

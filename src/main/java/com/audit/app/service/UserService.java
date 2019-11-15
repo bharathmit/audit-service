@@ -73,9 +73,6 @@ public class UserService {
     	if (!StringUtils.isEmpty(user)) {
     		throw new BusinessException(ErrorDescription.USER_EXIT.getMessage());
         }
-
-        /** Password Encry */
-        userObject.setPassword(stringDigester.digest(userObject.getPassword()));
         
         if(userObject.getStatus()==Status.InActive){
         	userObject.setLockDate(new Date());	
@@ -146,27 +143,30 @@ public class UserService {
     
     
     @Async
-    public void emailUserActivationToken(User userEntity){
-		String token = UUID.randomUUID().toString();
-		createUserToken(userEntity,token,TokenType.AccountActivation);
-		
-		
-		EmailDto emailRequest=new EmailDto();
-		
-		emailRequest.setTo(userEntity.getEmailId());
-		emailRequest.setSubject("Verify Email Address");
-		emailRequest.setTemplateLocation("emailverify-template");
-		emailRequest.setFrom("no-reply@gstp.com");
-		
-		Map model=new HashMap();
-		String appUrl = apiUrl+"user/confirm-account?token=" + token;;
-		model.put("appUrl", appUrl);
-		
-		emailRequest.setModel(model);
-		
-		emailService.sendEmailMessage(emailRequest);
-	}
-    
+	public void emailUserActivationToken(User userEntity) {
+		try {
+			String token = UUID.randomUUID().toString();
+			createUserToken(userEntity, token, TokenType.AccountActivation);
+
+			EmailDto emailRequest = new EmailDto();
+
+			emailRequest.setTo(userEntity.getEmailId());
+			emailRequest.setSubject("Verify Email Address");
+			emailRequest.setTemplateLocation("emailverify-template");
+			emailRequest.setFrom("no-reply@gstp.com");
+
+			Map model = new HashMap();
+			String appUrl = apiUrl + "user/confirm-account?token=" + token;
+			model.put("appUrl", appUrl);
+
+			emailRequest.setModel(model);
+
+			emailService.sendEmailMessage(emailRequest);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}    
     
     public void createUserToken(final User userEntity, final String token,TokenType tokenType) {
         final VerificationToken myToken = new VerificationToken(token, userEntity,tokenType);
@@ -174,8 +174,8 @@ public class UserService {
     }
     
     @Transactional
-	public ResponseResource changePassword(UserDto userObject) {
-		userRepo.passwordUpdate(userObject.getUserId(),stringDigester.digest(userObject.getPassword()),new Date());
+	public ResponseResource changePassword(String emailId,String password) {
+		userRepo.passwordUpdate(emailId,stringDigester.digest(password),new Date());
 		return new ResponseResource(ErrorDescription.USER_PASSWORD_CHANGE);
 	}
 	
@@ -198,26 +198,28 @@ public class UserService {
     }
 	
 	@Async
-	public void emailForgotPasswordToken(User userEntity){
-		String token = UUID.randomUUID().toString();
-		createUserToken(userEntity,token,TokenType.ForgotPassword);
-		
-		
-		EmailDto emailRequest=new EmailDto();
-		
-		emailRequest.setTo(userEntity.getEmailId());
-		emailRequest.setSubject("Reset your GSTP Cloud password");
-		emailRequest.setTemplateLocation("forgot-template");
-		emailRequest.setFrom("no-reply@gstp.com");
-		
-		Map model=new HashMap();
-		String appUrl = apiUrl+"account/confirm-password?token=" + token;;
-		model.put("appUrl", appUrl);
-		
-		
-		emailRequest.setModel(model);
-		
-		emailService.sendEmailMessage(emailRequest);
+	public void emailForgotPasswordToken(User userEntity) {
+		try {
+			String token = UUID.randomUUID().toString();
+			createUserToken(userEntity, token, TokenType.ForgotPassword);
+
+			EmailDto emailRequest = new EmailDto();
+
+			emailRequest.setTo(userEntity.getEmailId());
+			emailRequest.setSubject("Reset your GSTP Cloud password");
+			emailRequest.setTemplateLocation("forgot-template");
+			emailRequest.setFrom("no-reply@gstp.com");
+
+			Map model = new HashMap();
+			String appUrl = apiUrl + "account/confirm-password?token=" + token;
+			model.put("appUrl", appUrl);
+
+			emailRequest.setModel(model);
+
+			emailService.sendEmailMessage(emailRequest);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
     
