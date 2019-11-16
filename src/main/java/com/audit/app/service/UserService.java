@@ -156,7 +156,7 @@ public class UserService {
 			emailRequest.setFrom("no-reply@gstp.com");
 
 			Map model = new HashMap();
-			String appUrl = apiUrl + "user/confirm-account?token=" + token;
+			String appUrl = apiUrl + "account/confirm-account?token=" + token;
 			model.put("appUrl", appUrl);
 
 			emailRequest.setModel(model);
