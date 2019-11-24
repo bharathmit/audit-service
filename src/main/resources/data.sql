@@ -7,3 +7,9 @@ INSERT INTO USER( user_id, first_name, mobile, email_id , gender, marital_status
  INSERT INTO USER_ROLE ( user_role_id,created_by,created_date,status,role_id,user_id ) VALUES
  (1,1, CURRENT_DATE(),'Active',1,1);
  
+INSERT INTO USER( user_id, first_name, mobile, email_id , gender, marital_status, gstp_number, status, created_by, created_date)  VALUES 
+ (2,'mani','9789944150','veluvijay1804@gmail.com','Male', 'Single', '12345','InActive', 1, CURRENT_DATE());
+ 
+ INSERT INTO USER_ROLE ( user_role_id,created_by,created_date,status,role_id,user_id ) VALUES
+ (2,1, CURRENT_DATE(),'Active',1,2);
+ 
