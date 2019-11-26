@@ -1,5 +1,7 @@
 package com.audit.app.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.jasypt.digest.StringDigester;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.audit.app.dto.ResponseResource;
 import com.audit.app.dto.UserDto;
+import com.audit.app.dto.UserSearch;
 import com.audit.app.exception.BusinessException;
 import com.audit.app.exception.InvalidRequestException;
 import com.audit.app.exception.response.ErrorDescription;
@@ -46,14 +49,11 @@ public class UserController {
 		return userService.changePassword(emailId,password);
 	}
 
-	/*
-	 * @RequestMapping(value="/userlist",method=RequestMethod.POST) public Object
-	 * getUser(@RequestBody UserSearch searchObject){ return
-	 * userService.getUser(searchObject); }
-	 * 
-	 * @RequestMapping(value="/deleteuser",method=RequestMethod.POST) public Object
-	 * deleteUser(@RequestBody UserSearch searchObject){ return
-	 * userService.deleteUser(searchObject); }
-	 */
+	@RequestMapping(value = "/user-list", method = RequestMethod.POST)
+	public List<UserDto> getUser(@RequestBody UserSearch searchObject) {
+		return userService.getUser(searchObject);
+	}
+
+	
 
 }

@@ -1,16 +1,20 @@
 
 package com.audit.app.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 import org.jasypt.digest.StringDigester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +32,7 @@ import com.audit.app.dto.EmailDto;
 import com.audit.app.dto.ResponseResource;
 import com.audit.app.dto.UserDto;
 import com.audit.app.dto.UserRoleDto;
+import com.audit.app.dto.UserSearch;
 import com.audit.app.entity.User;
 import com.audit.app.entity.UserRole;
 import com.audit.app.entity.VerificationToken;
@@ -266,18 +271,27 @@ public class UserService {
         return true;
     }
 
-   
-    
-    /*@Transactional
     public List<UserDto> getUser(UserSearch search) {
-        try {
-            List<UserDto> userList = new ArrayList<UserDto>();
+    	 List<UserDto> userList = new ArrayList<UserDto>();
+    	try {           
             Session session = entityManager.unwrap(Session.class);
 
             Criteria criteria = session.createCriteria(User.class);
 
-            if (search.getUserId() != null && search.getUserId() > 0l) {
-                criteria.add(Restrictions.eq("userId", search.getUserId()));
+            if (!StringUtils.isEmpty(search.getFirstName())) {
+                criteria.add(Restrictions.eq("firstName", search.getFirstName()));
+            }
+            
+            if (!StringUtils.isEmpty(search.getGstpNumber())) {
+                criteria.add(Restrictions.eq("gstpNumber", search.getGstpNumber()));
+            }
+            
+            if (!StringUtils.isEmpty(search.getEmailId())) {
+                criteria.add(Restrictions.eq("emailId", search.getEmailId()));
+            }
+            
+            if (!StringUtils.isEmpty(search.getMobile())) {
+                criteria.add(Restrictions.eq("mobile", search.getMobile()));
             }
 
             List<User> list = criteria.list();
@@ -287,13 +301,14 @@ public class UserService {
                 userList.add(userDto);
             }
 
-            return userList;
+            
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
         }
+        return userList;
     }
 
-    @Transactional
+   /* @Transactional
     public ResponseResource deleteUser(UserSearch search) {
         try {
 
@@ -302,9 +317,9 @@ public class UserService {
         } catch (Exception e) {
             throw new RestException(ErrorCodeDescription.TRANSACTION_FAILED);
         }
-    }
+    }*/
     
-   */
+   
     
     
 

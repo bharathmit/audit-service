@@ -8,6 +8,7 @@ import java.util.List;
 import com.audit.app.constants.Gender;
 import com.audit.app.constants.MaritalStatus;
 import com.audit.app.constants.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -49,6 +50,7 @@ public class UserDto implements Serializable  {
 	@Getter	@Setter	
 	private String emailId;
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy") 
 	@Getter	@Setter	
 	private Date dob;
 	
@@ -76,12 +78,15 @@ public class UserDto implements Serializable  {
 	@Getter	@Setter	
 	private List<UserRoleDto> userRoles=new ArrayList<UserRoleDto>();
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@Getter	@Setter	
 	private Date lastLoginDate;
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@Getter	@Setter	
 	private Date passwordChangeDate;
 	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	@Getter	@Setter	
 	private Date lockDate;
 	
