@@ -23,6 +23,8 @@ public interface UserJPARepo extends JpaRepository< User, Long>{
 	@Modifying(clearAutomatically = true)
 	@Query("update User a SET a.password=:password , a.passwordChangeDate=:passwordChangeDate where a.emailId = :emailId")
     public int passwordUpdate(@Param("emailId") String emailId,@Param("password") String password,@Param("passwordChangeDate") Date passwordChangeDate);
+	
+	public int deleteByEmailId(String emailId);
 
 
 }

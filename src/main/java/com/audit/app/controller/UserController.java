@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.jasypt.digest.StringDigester;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,15 @@ public class UserController {
 		}
 		return userService.saveUser(reqObject);
 	}
+	
+	@RequestMapping(method = RequestMethod.PUT)
+	public UserDto editUser(@RequestBody @Valid UserDto reqObject, BindingResult bindingResult) {
+		// same we have to do in custom validation
+		if (bindingResult.hasErrors()) {
+			throw new InvalidRequestException("Exception", bindingResult);
+		}
+		return userService.saveUser(reqObject);
+	}
 
 	@RequestMapping(value = "/change-password", method = RequestMethod.PUT)
 	public ResponseResource changePassword(@RequestParam("emailId") final String emailId,@RequestParam("oldPassword") final String oldPassword, @RequestParam("password") final String password) {
@@ -49,11 +59,18 @@ public class UserController {
 		return userService.changePassword(emailId,password);
 	}
 
-	@RequestMapping(value = "/user-list", method = RequestMethod.POST)
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	public List<UserDto> getUser(@RequestBody UserSearch searchObject) {
 		return userService.getUser(searchObject);
 	}
 
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	public ResponseResource deleteUser(@RequestBody UserSearch searchObject) {
+		return userService.deleteUser(searchObject);
+	}
+	 
+	
+	
 	
 
 }

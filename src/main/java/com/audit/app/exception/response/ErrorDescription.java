@@ -6,6 +6,7 @@ public enum ErrorDescription {
 	
 	SERVER_ERROR("Appliction Server Error, Please try again after some time."),
 	TRANSACTION_SUCCESS("your transaction is successful"),
+	TRANSACTION_FAILED("Something went wrong, Please try again later"),
 	
 	
 	USER_EXIT("Email Id Already Exit"),

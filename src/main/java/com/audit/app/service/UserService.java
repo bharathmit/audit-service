@@ -73,23 +73,25 @@ public class UserService {
     @Transactional
     public UserDto saveUser(UserDto userObject) {
     	
-    	UserDto user=findByEmailId(userObject.getEmailId());
-        
-    	if (!StringUtils.isEmpty(user)) {
-    		throw new BusinessException(ErrorDescription.USER_EXIT.getMessage());
-        }
-        
-        if(userObject.getStatus()==Status.InActive){
+    	if(userObject.getUserId()==0) {
+    		UserDto user=findByEmailId(userObject.getEmailId());
+            
+        	if (!StringUtils.isEmpty(user)) {
+        		throw new BusinessException(ErrorDescription.USER_EXIT.getMessage());
+            }
+    	}
+    	
+        if(userObject.getStatus()!=Status.InActive){
         	userObject.setLockDate(new Date());	
         }
 
         User userEntity = (User) ModelEntityMapper.converObjectToPoJo(userObject, User.class);
 
+        deleteUserRole(userObject.getUserId());
+        
         userEntity = userRepo.save(userEntity);
 
         userObject.setUserId(userEntity.getUserId());
-
-        deleteUserRole(userObject.getUserId());
         
         for (UserRoleDto roleUser : userObject.getUserRoles()) {
 
@@ -308,16 +310,17 @@ public class UserService {
         return userList;
     }
 
-   /* @Transactional
+    @Transactional
     public ResponseResource deleteUser(UserSearch search) {
         try {
-
-            userRepo.delete(search.getUserId());
-            return new ResponseResource(ErrorCodeDescription.TRANSACTION_SUCCESS);
+        	UserDto user=findByEmailId(search.getEmailId());
+        	deleteUserRole(user.getUserId());
+            userRepo.deleteByEmailId(search.getEmailId());
+            return new ResponseResource(ErrorDescription.TRANSACTION_SUCCESS);
         } catch (Exception e) {
-            throw new RestException(ErrorCodeDescription.TRANSACTION_FAILED);
+        	throw new BusinessException(ErrorDescription.TRANSACTION_FAILED.getMessage());
         }
-    }*/
+    }
     
    
     

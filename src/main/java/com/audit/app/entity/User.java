@@ -47,7 +47,7 @@ public class User extends Audit implements Serializable{
 	@Getter	@Setter	
 	private String lastName;
 	
-	@Column
+	@Column(updatable = false)
 	@Getter	@Setter	
 	private String password;
 	
@@ -59,7 +59,7 @@ public class User extends Audit implements Serializable{
 	@Getter	@Setter	
 	private String mobile;
 	
-	@Column(unique=true,nullable=false)
+	@Column(unique=true,nullable=false,updatable = false)
 	@Getter	@Setter	
 	private String emailId;
 	
@@ -78,7 +78,7 @@ public class User extends Audit implements Serializable{
 	@Getter	@Setter	
 	private MaritalStatus maritalStatus;
 	
-	@Column
+	@Column(updatable = false)
 	@Getter	@Setter	
 	private String gstpNumber;
 	
@@ -108,17 +108,17 @@ public class User extends Audit implements Serializable{
 	private List<UserRole> userRoles;
 	
 	@Temporal( TemporalType.TIMESTAMP)
-	@Column
+	@Column(updatable = false)
 	@Getter	@Setter	
 	private Date lastLoginDate;
 	
 	@Temporal( TemporalType.TIMESTAMP)
-	@Column
+	@Column(updatable = false)
 	@Getter	@Setter	
 	private Date passwordChangeDate;
 	
 	@Temporal( TemporalType.TIMESTAMP)
-	@Column
+	@Column(updatable = false)
 	@Getter	@Setter	
 	private Date lockDate;
 	
