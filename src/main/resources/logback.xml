@@ -9,7 +9,7 @@
 	
 	<!-- You can override this to have a custom pattern -->
 	<property name="CONSOLE_LOG_PATTERN"
-			  			  value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+			  			  value="%d{yyyy/MM/dd HH:mm:ss.SSS,UTC} [%thread] %-5level %logger{36}:%L - %msg%n"/>
 	
 	
 	<!-- Appender to log to console -->

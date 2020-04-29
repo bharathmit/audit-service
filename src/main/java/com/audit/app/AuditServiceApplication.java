@@ -1,6 +1,10 @@
 package com.audit.app;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.TimeZone;
+
+import javax.annotation.PostConstruct;
 
 import org.jasypt.digest.PooledStringDigester;
 import org.jasypt.digest.StringDigester;
@@ -28,6 +32,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EncryptablePropertySource({"application.properties","application.yml"})
 public class AuditServiceApplication {
+	
+	@PostConstruct
+	void started() {		
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 	
 	@Bean
 	public Docket api() {
@@ -72,7 +81,8 @@ public class AuditServiceApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(AuditServiceApplication.class, args);
+		
+		SpringApplication.run(AuditServiceApplication.class, args);		
 	}
 
 }
