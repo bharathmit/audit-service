@@ -1,7 +1,6 @@
 package com.audit.app;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -11,6 +10,7 @@ import org.jasypt.digest.StringDigester;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.RestController;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -30,7 +30,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-@EncryptablePropertySource({"application.properties","application.yml"})
+@EncryptablePropertySource({"application.yml"})
 public class AuditServiceApplication {
 	
 	@PostConstruct
@@ -41,12 +41,12 @@ public class AuditServiceApplication {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("com.audit.app.controller")).paths(PathSelectors.regex("/.*"))
+				.apis(RequestHandlerSelectors.withClassAnnotation(RestController.class)).paths(PathSelectors.regex("/.*"))
 				.build().apiInfo(apiEndPointsInfo());
 	}
 
 	private ApiInfo apiEndPointsInfo() {
-		return new ApiInfoBuilder().title("GST Practitioners REST API").description("GST & Income Tax related news")
+		return new ApiInfoBuilder().title("Spring Boot Ecosystem API").description("All the Spring boot Ecosystem feature Example")
 				.contact(new Contact("Bharath Mannaperumal", "www.jsoftgroup.wordpress.com", "bharathkumar.feb14@gmail.com"))
 				.license("Apache 2.0").licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html").version("1.0.0")
 				.build();
@@ -81,7 +81,7 @@ public class AuditServiceApplication {
 	}
 
 	public static void main(String[] args) {
-		
+		System.setProperty("jasypt.encryptor.password", "bharath");
 		SpringApplication.run(AuditServiceApplication.class, args);		
 	}
 

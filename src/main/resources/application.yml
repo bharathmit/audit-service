@@ -1,6 +1,19 @@
 spring:
+  profiles.active: dev
   application:
     name: audit-service
+    
+  mail:
+    default-encoding: UTF-8
+    host: ENC(BiDJPbNehF3MCSqTbQHvfm/5Xv0TNeAF962e08MSZ4tw2D3pf4ysag==)
+    username: ENC(BkRSbyEvYfFQHNmKaAklfip9d7m8Gpa80ReAXB0HLzKH9l/zYhMOFQ==)
+    password: ENC(uXmTSPW8IzMHKYIhGxtJ0U5TuO4do4J3v5A9b62UhZE=)
+    port: 587
+    protocol: smtp
+    test-connection: false
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true
+    mail.smtp.ssl.trust: ENC(BiDJPbNehF3MCSqTbQHvfm/5Xv0TNeAF962e08MSZ4tw2D3pf4ysag==)  
           
 info:
   app:
@@ -8,8 +21,9 @@ info:
     description: ${info.app.name} is Running on ${server.port} port
       
 server:
-  port: 8090 
-
+  port: 8090
+  
+   
 paytm.payment:
   sandbox:
     merchantId: ENC(VliTCUZjRRH1JSH0FGicwQPKrXEq4TutqMeZva6e158=)
@@ -24,5 +38,50 @@ paytm.payment:
       CHANNEL_ID: ${paytm.payment.sandbox.channelid}
       INDUSTRY_TYPE_ID: ${paytm.payment.sandbox.industrytypeid}
       WEBSITE: ${paytm.payment.sandbox.website}
-      CALLBACK_URL: ${paytm.payment.sandbox.callbackUrl}
+      CALLBACK_URL: ${paytm.payment.sandbox.callbackUrl}   
+   
+#UI client endpoint   
+webapp.api: https://audit-ui.herokuapp.com/
+
+---
+
+spring:
+  profiles: dev
+  
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        format_sql: true
+        show_sql: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/audit?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: ENC(wACjVe/G1xaS2J+keF7rUA==)
+    password: ENC(7FEfNjEJsqdR+QTz7LO10g==)
+    driverClassName: com.mysql.jdbc.Driver
+
+      
+---
+spring:
+  profiles: test
+  
+  h2:
+    console.enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+        show_sql: true
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    platform: h2
+    data: classpath:insert-test-data.sql
   
