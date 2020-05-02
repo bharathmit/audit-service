@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 @Component
 @ConfigurationProperties("paytm.payment.sandbox")
-public class PaytmDetails {
+public class PaytmProperties {
 	
 	private String merchantId;
 

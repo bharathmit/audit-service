@@ -11,14 +11,14 @@ public enum ErrorDescription {
 	
 	USER_EXIT("Email Id (OR) User Already Exit"),
 	USER_NOT_EXIT("Email Id (OR) User Not Registered"),
-	USER_ACCOUNT_INACTIVE("This email id already activated Or Blocked"),
+	USER_ACCOUNT_ACTIVE("This email id already activated"),
 	USER_ACCOUNT_BLOCKED("This email id is Blocked Or In active"),
 	
 	INVALID_USER("Incorrect UserName"),
 	INVALID_PASSWORD("Incorrect Password"),
 	MOBILE_EXIT("Mobile Number Already Exit"),
 	INVALID_TOKEN("Incoorrect confirmation Token"),
-	TIME_OUT("Registration confirmation Token Expiryed"),
+	TOKEN_EXPIRED("Registration confirmation Token Expired"),
 	
 	USER_ACTIVATE_EMAIL("Activation link sent to your email id."),
 	USER_PASSWORD_CHANGE("Your login password changed successfully"),

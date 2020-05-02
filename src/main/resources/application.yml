@@ -21,7 +21,7 @@ info:
     description: ${info.app.name} is Running on ${server.port} port
       
 server:
-  port: 8090
+  port: 8080
   
    
 paytm.payment:
@@ -62,7 +62,48 @@ spring:
     password: ENC(7FEfNjEJsqdR+QTz7LO10g==)
     driverClassName: com.mysql.jdbc.Driver
     data: classpath:data.sql
-
+    initialization-mode: always
+    
+  security:
+      oauth2:
+        client:
+          registration:
+            google:
+              clientId: 865549848102-qr8i851t8tu091833jvdp03ptg0c0uu2.apps.googleusercontent.com
+              clientSecret: 4tyAS41I7hYb-DCyl_hNK22e
+              redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+              scope:
+                - email
+                - profile
+            facebook:
+              clientId: 727334660641997
+              clientSecret: 692478651b2617958314d8893721d716
+              redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+              scope:
+                - email
+                - public_profile
+            github:
+              clientId: 4d5084f65d2e5d7182f5
+              clientSecret: 35dc37e138bbd978ba9284a4b7e552480ac9874d
+              redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+              scope:
+                - user:email
+                - read:user
+          provider:
+            facebook:
+              authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+              tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+              userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
+app:
+  oauth2:
+    # After successfully authenticating with the OAuth2 Provider,
+    # we'll be generating an auth token for the user and sending the token to the
+    # redirectUri mentioned by the client in the /oauth2/authorize request.
+    # We're not using cookies because they won't work well in mobile clients.
+    authorizedRedirectUris:
+      - http://localhost:3000/oauth2/redirect
+      - myandroidapp://oauth2/redirect
+      - myiosapp://oauth2/redirect
       
 ---
 spring:

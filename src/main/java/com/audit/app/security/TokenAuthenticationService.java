@@ -26,7 +26,7 @@ public class TokenAuthenticationService {
 	public static final String TOKEN_PREFIX = "Bearer";
 	public static final String HEADER_STRING = "Authorization";
 	
-	public static String addAuthentication(String emailId,UserDto user) {
+	public static String createToken(String emailId,UserDto user) {
 		String JWTtoken = Jwts
 				.builder()
 				.setSubject(emailId)
@@ -54,7 +54,6 @@ public class TokenAuthenticationService {
 		}
 		return null;
 	}
-	
 	
 	
 		

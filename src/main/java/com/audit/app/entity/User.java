@@ -16,7 +16,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
+import com.audit.app.constants.AuthProvider;
 import com.audit.app.constants.Gender;
 import com.audit.app.constants.MaritalStatus;
 import com.audit.app.constants.Status;
@@ -51,13 +53,23 @@ public class User extends Audit implements Serializable{
 	@Getter	@Setter	
 	private String password;
 	
-	@Column(unique=true,nullable=false)
+	@Column
 	@Getter	@Setter	
 	private String mobile;
 	
 	@Column(unique=true,nullable=false,updatable = false)
 	@Getter	@Setter	
 	private String emailId;
+	
+	@Column
+	@NotNull
+    @Enumerated(EnumType.STRING)
+	@Getter	@Setter	
+    private AuthProvider provider;
+	
+	@Column
+	@Getter	@Setter	
+	private String providerId;
 	
 	@Temporal( TemporalType.DATE)
 	@Column

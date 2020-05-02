@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.audit.app.constants.AuthProvider;
 import com.audit.app.constants.Gender;
 import com.audit.app.constants.MaritalStatus;
 import com.audit.app.constants.Status;
@@ -43,6 +44,12 @@ public class UserDto implements Serializable  {
 
 	@Getter	@Setter	
 	private String emailId;
+	
+	@Getter	@Setter	
+    private AuthProvider provider;
+	
+	@Getter	@Setter	
+    private String providerId;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy") 
 	@Getter	@Setter	

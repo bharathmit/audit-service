@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.audit.app.constants.AuthProvider;
 import com.audit.app.constants.Status;
 import com.audit.app.exception.BusinessException;
 import com.audit.app.exception.response.ErrorDescription;
@@ -37,7 +38,7 @@ public class LoginService {
 			throw new BusinessException(ErrorDescription.INVALID_PASSWORD.getMessage());
 		}
 		
-		if(!userService.loginUpdate(userDto.getUserId())){
+		if(!userService.loginUpdate(userDto.getUserId(),AuthProvider.springeco)){
 			throw new BusinessException(ErrorDescription.SERVER_ERROR.getMessage());
 		}
 		return userDto;

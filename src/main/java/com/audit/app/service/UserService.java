@@ -20,12 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.audit.app.constants.AuthProvider;
 import com.audit.app.constants.Status;
 import com.audit.app.constants.TokenType;
 import com.audit.app.entity.User;
@@ -72,16 +72,19 @@ public class UserService {
     
     @Transactional
     public UserDto saveUser(UserDto userObject) {
+    	boolean newUser = false;
     	
-    	if(userObject.getUserId()==0) {
+    	// New user Always User Id will be Zero
+    	if(StringUtils.isEmpty(userObject.getUserId())) {
     		UserDto user=findByEmailId(userObject.getEmailId());
             
         	if (!StringUtils.isEmpty(user)) {
         		throw new BusinessException(ErrorDescription.USER_EXIT.getMessage());
             }
+        	newUser=true;
     	}
     	
-        if(userObject.getStatus()!=Status.InActive){
+        if(userObject.getStatus()==Status.InActive){
         	userObject.setLockDate(new Date());	
         }
 
@@ -101,6 +104,11 @@ public class UserService {
 
             userRoleRepo.save(userRoleEntity);
         }
+        
+        if(newUser && userObject.getProvider().equals(AuthProvider.springeco)) {
+        	emailUserActivationToken(userEntity);
+        }
+        
         return userObject;
     }
     
@@ -112,8 +120,8 @@ public class UserService {
     		throw new BusinessException(ErrorDescription.USER_NOT_EXIT.getMessage());
         }
     	
-    	if(user.getStatus()==Status.Active || user.getStatus()==Status.Blocked) {
-    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_INACTIVE.getMessage());
+    	if(user.getStatus().equals(Status.Active)) {
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ACTIVE.getMessage());
     	}
     	
     	emailUserActivationToken(user);
@@ -130,11 +138,11 @@ public class UserService {
 		final User user = verificationToken.getUser();
 		final Calendar cal = Calendar.getInstance();
 		if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-			throw new BusinessException(ErrorDescription.TIME_OUT.getMessage());
+			throw new BusinessException(ErrorDescription.TOKEN_EXPIRED.getMessage());
 		}
 		
-		if(user.getStatus()==Status.Active || user.getStatus()==Status.Blocked) {
-    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_INACTIVE.getMessage());
+		if(user.getStatus().equals(Status.Active)) {
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ACTIVE.getMessage());
     	}
 
 		user.setStatus(Status.Active);
@@ -239,7 +247,7 @@ public class UserService {
 			final User user = verificationToken.getUser();
 			final Calendar cal = Calendar.getInstance();
 			if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-				throw new BusinessException(ErrorDescription.TIME_OUT.getMessage());
+				throw new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
 			}	
 			
 			UserDto userDto = (UserDto) ModelEntityMapper.converObjectToPoJo(user, UserDto.class);
@@ -255,8 +263,8 @@ public class UserService {
     }
     
     @Transactional
-    public boolean loginUpdate(Long userId){
-    	if(userRepo.loginUpdate(userId,new Date())>0){
+    public boolean loginUpdate(Long userId,AuthProvider provider){
+    	if(userRepo.loginUpdate(userId,new Date(),provider)>0){
     		return true;
     	}
 		return false;

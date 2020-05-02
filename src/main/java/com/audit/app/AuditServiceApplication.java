@@ -81,7 +81,6 @@ public class AuditServiceApplication {
 	}
 
 	public static void main(String[] args) {
-		System.setProperty("jasypt.encryptor.password", "bharath");
 		SpringApplication.run(AuditServiceApplication.class, args);		
 	}
 
