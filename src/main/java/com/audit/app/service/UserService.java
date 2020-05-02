@@ -28,16 +28,16 @@ import org.springframework.util.StringUtils;
 
 import com.audit.app.constants.Status;
 import com.audit.app.constants.TokenType;
-import com.audit.app.dto.EmailDto;
-import com.audit.app.dto.ResponseResource;
-import com.audit.app.dto.UserDto;
-import com.audit.app.dto.UserRoleDto;
-import com.audit.app.dto.UserSearch;
 import com.audit.app.entity.User;
 import com.audit.app.entity.UserRole;
 import com.audit.app.entity.VerificationToken;
 import com.audit.app.exception.BusinessException;
 import com.audit.app.exception.response.ErrorDescription;
+import com.audit.app.payload.EmailDto;
+import com.audit.app.payload.ResponseResource;
+import com.audit.app.payload.UserDto;
+import com.audit.app.payload.UserRoleDto;
+import com.audit.app.payload.UserSearch;
 import com.audit.app.repo.UserJPARepo;
 import com.audit.app.repo.UserRoleJPARepo;
 import com.audit.app.repo.VerificationTokenRepo;
@@ -311,11 +311,14 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseResource deleteUser(UserSearch search) {
+    public ResponseResource deleteUser(String emailId) {
         try {
-        	UserDto user=findByEmailId(search.getEmailId());
+        	UserDto user=findByEmailId(emailId);
+        	if (StringUtils.isEmpty(user)) {
+        		throw new BusinessException(ErrorDescription.USER_NOT_EXIT.getMessage());
+            }
         	deleteUserRole(user.getUserId());
-            userRepo.deleteByEmailId(search.getEmailId());
+            userRepo.deleteByEmailId(emailId);
             return new ResponseResource(ErrorDescription.TRANSACTION_SUCCESS);
         } catch (Exception e) {
         	throw new BusinessException(ErrorDescription.TRANSACTION_FAILED.getMessage());

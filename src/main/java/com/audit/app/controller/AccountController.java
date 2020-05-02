@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.audit.app.dto.ResponseResource;
-import com.audit.app.dto.UserDto;
+import com.audit.app.payload.ResponseResource;
+import com.audit.app.payload.UserDto;
 import com.audit.app.repo.VerificationTokenRepo;
 import com.audit.app.service.UserService;
 

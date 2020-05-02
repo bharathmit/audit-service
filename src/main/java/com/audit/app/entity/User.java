@@ -51,10 +51,6 @@ public class User extends Audit implements Serializable{
 	@Getter	@Setter	
 	private String password;
 	
-	@Column
-	@Getter	@Setter	
-	private String phoneNumber;
-	
 	@Column(unique=true,nullable=false)
 	@Getter	@Setter	
 	private String mobile;
@@ -78,10 +74,6 @@ public class User extends Audit implements Serializable{
 	@Getter	@Setter	
 	private MaritalStatus maritalStatus;
 	
-	@Column(updatable = false)
-	@Getter	@Setter	
-	private String gstpNumber;
-	
 	@Column
 	@Getter	@Setter	
 	private String otherName;
@@ -93,10 +85,6 @@ public class User extends Audit implements Serializable{
 	@Column
 	@Getter	@Setter	
 	private String pinCode;
-	
-	@Column
-	@Getter	@Setter	
-	private String qulification;
 	
 	@Column(nullable=false)
 	@Enumerated(EnumType.STRING)

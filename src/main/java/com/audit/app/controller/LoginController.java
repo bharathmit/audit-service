@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.audit.app.dto.LoginDto;
-import com.audit.app.dto.LoginResponseDto;
-import com.audit.app.dto.UserDto;
 import com.audit.app.exception.InvalidRequestException;
+import com.audit.app.payload.LoginDto;
+import com.audit.app.payload.LoginResponseDto;
+import com.audit.app.payload.UserDto;
 import com.audit.app.security.TokenAuthenticationService;
 import com.audit.app.service.LoginService;
 

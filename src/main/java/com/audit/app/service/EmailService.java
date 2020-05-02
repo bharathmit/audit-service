@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import com.audit.app.dto.EmailDto;
+import com.audit.app.payload.EmailDto;
 
 import lombok.extern.log4j.Log4j;
 

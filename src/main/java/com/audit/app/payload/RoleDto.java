@@ -1,27 +1,25 @@
-package com.audit.app.dto;
+package com.audit.app.payload;
 
 import java.io.Serializable;
 
+import com.audit.app.constants.Status;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserSearch implements Serializable  {
+public class RoleDto implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Getter	@Setter	
-	private String firstName;
+	Long roleId;
 	
 	@Getter	@Setter	
-	private String emailId;
+	String roleName;
 	
 	@Getter	@Setter	
-	private String mobile;
-	
-	@Getter	@Setter	
-	private String gstpNumber;
+	Status status;
 
 }

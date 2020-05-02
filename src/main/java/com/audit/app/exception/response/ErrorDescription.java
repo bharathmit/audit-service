@@ -9,8 +9,8 @@ public enum ErrorDescription {
 	TRANSACTION_FAILED("Something went wrong, Please try again later"),
 	
 	
-	USER_EXIT("Email Id Already Exit"),
-	USER_NOT_EXIT("Email Id Not Registered"),
+	USER_EXIT("Email Id (OR) User Already Exit"),
+	USER_NOT_EXIT("Email Id (OR) User Not Registered"),
 	USER_ACCOUNT_INACTIVE("This email id already activated Or Blocked"),
 	USER_ACCOUNT_BLOCKED("This email id is Blocked Or In active"),
 	

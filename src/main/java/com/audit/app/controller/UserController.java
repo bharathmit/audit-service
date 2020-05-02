@@ -6,24 +6,24 @@ import javax.validation.Valid;
 
 import org.jasypt.digest.StringDigester;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.audit.app.dto.ResponseResource;
-import com.audit.app.dto.UserDto;
-import com.audit.app.dto.UserSearch;
 import com.audit.app.exception.BusinessException;
 import com.audit.app.exception.InvalidRequestException;
 import com.audit.app.exception.response.ErrorDescription;
+import com.audit.app.payload.ResponseResource;
+import com.audit.app.payload.UserDto;
+import com.audit.app.payload.UserSearch;
 import com.audit.app.service.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
 	@Autowired
@@ -59,14 +59,14 @@ public class UserController {
 		return userService.changePassword(emailId,password);
 	}
 
-	@RequestMapping(value = "/list", method = RequestMethod.POST)
-	public List<UserDto> getUser(@RequestBody UserSearch searchObject) {
+	@RequestMapping(method = RequestMethod.GET)
+	public List<UserDto> getAllUser(@RequestBody UserSearch searchObject) {
 		return userService.getUser(searchObject);
 	}
 
-	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	public ResponseResource deleteUser(@RequestBody UserSearch searchObject) {
-		return userService.deleteUser(searchObject);
+	@RequestMapping(path="/{emailId}", method = RequestMethod.DELETE)
+	public ResponseResource deleteUser(@PathVariable("emailId") String emailId) {
+		return userService.deleteUser(emailId);
 	}
 	 
 	

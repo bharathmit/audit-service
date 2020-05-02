@@ -1,4 +1,4 @@
-package com.audit.app.dto;
+package com.audit.app.payload;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,14 +39,8 @@ public class UserDto implements Serializable  {
 	private String password;
 	
 	@Getter	@Setter	
-	private String otherName;
-	
-	@Getter	@Setter	
 	private String mobile;
 
-	@Getter	@Setter	
-	private String phoneNumber;
-	
 	@Getter	@Setter	
 	private String emailId;
 	
@@ -61,16 +55,10 @@ public class UserDto implements Serializable  {
 	private MaritalStatus maritalStatus;
 	
 	@Getter	@Setter	
-	private String gstpNumber;
-	
-	@Getter	@Setter	
 	private String address;
 	
 	@Getter	@Setter	
 	private String pinCode;
-	
-	@Getter	@Setter	
-	private String qulification;
 	
 	@Getter	@Setter	
 	private Status status;
@@ -78,15 +66,15 @@ public class UserDto implements Serializable  {
 	@Getter	@Setter	
 	private List<UserRoleDto> userRoles=new ArrayList<UserRoleDto>();
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
 	@Getter	@Setter	
 	private Date lastLoginDate;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
 	@Getter	@Setter	
 	private Date passwordChangeDate;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
 	@Getter	@Setter	
 	private Date lockDate;
 	

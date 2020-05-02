@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.audit.app.constants.Status;
-import com.audit.app.dto.LoginDto;
-import com.audit.app.dto.UserDto;
 import com.audit.app.exception.BusinessException;
 import com.audit.app.exception.response.ErrorDescription;
+import com.audit.app.payload.LoginDto;
+import com.audit.app.payload.UserDto;
 
 @Service
 public class LoginService {
