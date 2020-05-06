@@ -1,6 +1,7 @@
 package com.audit.app.security;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -52,7 +53,7 @@ public class TokenAuthenticationService {
 			String json= mapper.writeValueAsString(userObj);
 			UserDto user = mapper.readValue(json, UserDto.class);
 			
-			List<GrantedAuthority> authorities = Collections.emptyList();
+			List<GrantedAuthority> authorities = new ArrayList<>();;
 	    	for (UserRoleDto role : user.getUserRoles()) {
 	    		authorities.add(new SimpleGrantedAuthority(role.getRole().getRoleName()));
 	    	}

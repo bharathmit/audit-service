@@ -50,7 +50,7 @@ spring:
   
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
@@ -61,8 +61,8 @@ spring:
     username: ENC(wACjVe/G1xaS2J+keF7rUA==)
     password: ENC(7FEfNjEJsqdR+QTz7LO10g==)
     driverClassName: com.mysql.jdbc.Driver
-    data: classpath:data.sql
-    initialization-mode: always
+    #data: classpath:data.sql
+    #initialization-mode: always
     
   security:
       oauth2:

@@ -53,21 +53,27 @@ public class UserController {
 		}
 		return userService.saveUser(reqObject);
 	}
-
+	
+	@PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
+	@RequestMapping(path="/{emailId}",method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
+	public UserDto getUser(@PathVariable("emailId") String emailId) {
+		return userService.findByEmailId(emailId);
+	}
+	
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public List<UserDto> getAllUser() {
 		UserSearch searchObject=new UserSearch();
 		return userService.getUser(searchObject);
 	}
-
+	
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(path="/{emailId}", method = RequestMethod.DELETE, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseResource deleteUser(@PathVariable("emailId") String emailId) {
 		return userService.deleteUser(emailId);
 	}
 	 
-	@PreAuthorize("hasRole('ADMIN') && hasRole('USER')")
+	@PreAuthorize("hasRole('ADMIN') || hasRole('USER')")
 	@RequestMapping(value = "/change-password", method = RequestMethod.PUT, produces = { MediaType.APPLICATION_JSON_VALUE })
 	public ResponseResource changePassword(@RequestParam("emailId") final String emailId,@RequestParam("oldPassword") final String oldPassword, @RequestParam("password") final String password) {
 		UserDto user = userService.findByEmailId(emailId);
