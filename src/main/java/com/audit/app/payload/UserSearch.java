@@ -20,8 +20,5 @@ public class UserSearch implements Serializable  {
 	
 	@Getter	@Setter	
 	private String mobile;
-	
-	@Getter	@Setter	
-	private String gstpNumber;
 
 }

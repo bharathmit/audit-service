@@ -25,7 +25,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean  {
         	HttpServletRequest req = (HttpServletRequest) request;
         	String path = req.getRequestURI().substring(req.getContextPath().length());
         	
-        	if(!path.contains("/login/") || !path.contains("/user/")){
+        	if(!path.contains("/auth/**") || !path.contains("/oauth2/**")){
         		Authentication authentication = TokenAuthenticationService.getAuthentication((HttpServletRequest)request);
            	 	SecurityContextHolder.getContext().setAuthentication(authentication);
         	}

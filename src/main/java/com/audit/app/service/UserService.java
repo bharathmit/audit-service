@@ -121,7 +121,7 @@ public class UserService {
         }
     	
     	if(user.getStatus().equals(Status.Active)) {
-    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ACTIVE.getMessage());
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ALREADY_ACTIVE.getMessage());
     	}
     	
     	emailUserActivationToken(user);
@@ -129,7 +129,7 @@ public class UserService {
     }
     
     
-    public UserDto confirmUserActivationToken(String token){
+    public ResponseResource confirmUserActivationToken(String token){
 		final VerificationToken verificationToken = getVerificationToken(token);
 		if (StringUtils.isEmpty(verificationToken)) {
 			throw new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
@@ -142,14 +142,13 @@ public class UserService {
 		}
 		
 		if(user.getStatus().equals(Status.Active)) {
-    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ACTIVE.getMessage());
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_ALREADY_ACTIVE.getMessage());
     	}
 
 		user.setStatus(Status.Active);
 		userRepo.saveAndFlush(user);
 		
-		UserDto userDto = (UserDto) ModelEntityMapper.converObjectToPoJo(user, UserDto.class);
-		return userDto;
+		return new ResponseResource(ErrorDescription.USER_ACCOUNT__ACTIVE);
 	}
     
     public VerificationToken getVerificationToken(String VerificationToken){
@@ -190,6 +189,11 @@ public class UserService {
     
     @Transactional
 	public ResponseResource changePassword(String emailId,String password) {
+    	UserDto user = findByEmailId(emailId);
+    	
+    	if(user.getStatus()!=Status.Active) {
+    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_BLOCKED.getMessage());
+    	}
 		userRepo.passwordUpdate(emailId,stringDigester.digest(password),new Date());
 		return new ResponseResource(ErrorDescription.USER_PASSWORD_CHANGE);
 	}
@@ -238,7 +242,7 @@ public class UserService {
 	}
 	
     
-	 public UserDto confirmUserPasswordToken(String token){
+	 public ResponseResource confirmUserPasswordToken(String token){
 			final VerificationToken verificationToken = getVerificationToken(token);
 			if (StringUtils.isEmpty(verificationToken)) {
 				throw new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
@@ -250,8 +254,15 @@ public class UserService {
 				throw new BusinessException(ErrorDescription.INVALID_TOKEN.getMessage());
 			}	
 			
-			UserDto userDto = (UserDto) ModelEntityMapper.converObjectToPoJo(user, UserDto.class);
-			return userDto;
+			if (StringUtils.isEmpty(user)) {
+	    		throw new BusinessException(ErrorDescription.USER_NOT_EXIT.getMessage());
+	        }
+	    	
+	    	if(user.getStatus()!=Status.Active) {
+	    		throw new BusinessException(ErrorDescription.USER_ACCOUNT_BLOCKED.getMessage());
+	    	}
+			
+	    	return new ResponseResource(ErrorDescription.USER_PASSWORD_TOKEN);
 		}
     
     
@@ -259,6 +270,9 @@ public class UserService {
     	UserDto resultObject = new UserDto();
         User entityObject = userRepo.findByEmailId(emailId.trim());
         resultObject = (UserDto) ModelEntityMapper.converObjectToPoJo(entityObject, UserDto.class);
+        if (StringUtils.isEmpty(resultObject)) {
+    		throw new BusinessException(ErrorDescription.USER_NOT_EXIT.getMessage());
+        }
         return resultObject;
     }
     
@@ -290,10 +304,6 @@ public class UserService {
 
             if (!StringUtils.isEmpty(search.getFirstName())) {
                 criteria.add(Restrictions.eq("firstName", search.getFirstName()));
-            }
-            
-            if (!StringUtils.isEmpty(search.getGstpNumber())) {
-                criteria.add(Restrictions.eq("gstpNumber", search.getGstpNumber()));
             }
             
             if (!StringUtils.isEmpty(search.getEmailId())) {

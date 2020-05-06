@@ -1,18 +1,21 @@
 package com.audit.app.security;
 
-import static java.util.Collections.emptyList;
-
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.StringUtils;
 
 import com.audit.app.payload.UserDto;
+import com.audit.app.payload.UserRoleDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
@@ -49,8 +52,13 @@ public class TokenAuthenticationService {
 			String json= mapper.writeValueAsString(userObj);
 			UserDto user = mapper.readValue(json, UserDto.class);
 			
+			List<GrantedAuthority> authorities = Collections.emptyList();
+	    	for (UserRoleDto role : user.getUserRoles()) {
+	    		authorities.add(new SimpleGrantedAuthority(role.getRole().getRoleName()));
+	    	}
+			
 			return claims != null ? new UsernamePasswordAuthenticationToken(user,
-					user, emptyList()) : null;
+					user, authorities) : null;
 		}
 		return null;
 	}

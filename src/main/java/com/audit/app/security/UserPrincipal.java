@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import com.audit.app.payload.UserDto;
+import com.audit.app.payload.UserRoleDto;
 
 public class UserPrincipal implements OAuth2User, UserDetails {
     private Long id;
@@ -28,8 +29,11 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     public static UserPrincipal create(UserDto user) {
-        List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+    	
+    	List<GrantedAuthority> authorities = Collections.emptyList();
+    	for (UserRoleDto role : user.getUserRoles()) {
+    		authorities.add(new SimpleGrantedAuthority(role.getRole().getRoleName()));
+    	}
 
         return new UserPrincipal(
                 user.getUserId(),
