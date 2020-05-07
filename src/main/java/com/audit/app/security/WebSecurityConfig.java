@@ -78,10 +78,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     "/**/*.css",
                     "/**/*.js")
                     .permitAll()
-                .antMatchers("/auth/**","/account/**", "/oauth2/**")
+                .antMatchers("/api/auth/**","/api/account/**", "/api/oauth2/**")
                     .permitAll()
                  // api authenticate with jwt token
-                 .anyRequest().authenticated()    			  
+                .antMatchers("/api/**").authenticated()    			  
                 //OAuth2 Social Login
 				.and().oauth2Login()
 		        .authorizationEndpoint()

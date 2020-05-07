@@ -20,5 +20,18 @@ public class UserSearch implements Serializable  {
 	
 	@Getter	@Setter	
 	private String mobile;
+	
+	@Getter	@Setter	
+	private int pageNumber;
+	
+	@Getter	@Setter	
+	private int itemsPerPage;
+	
+	@Setter	
+	private int firstResult;
+	
+	public int getFirstResult() {
+        return (pageNumber - 1) * itemsPerPage;
+    }
 
 }

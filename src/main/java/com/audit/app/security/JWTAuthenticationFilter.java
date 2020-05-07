@@ -17,18 +17,14 @@ import org.springframework.web.filter.GenericFilterBean;
 public class JWTAuthenticationFilter extends GenericFilterBean  {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
-
+	
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
             ServletException {
         try {
-        	HttpServletRequest req = (HttpServletRequest) request;
-        	String path = req.getRequestURI().substring(req.getContextPath().length());
-        	
-        	if(!path.contains("/auth/**") || !path.contains("/oauth2/**")){
-        		Authentication authentication = TokenAuthenticationService.getAuthentication((HttpServletRequest)request);
-           	 	SecurityContextHolder.getContext().setAuthentication(authentication);
-        	}
+        	logger.info("JWT OAuth Fillter Security context setting");
+    		Authentication authentication = TokenAuthenticationService.getAuthentication((HttpServletRequest)request);
+       	 	SecurityContextHolder.getContext().setAuthentication(authentication);
         	
         } catch (Throwable e) {
         	logger.error("Could not set user authentication in security context", e);

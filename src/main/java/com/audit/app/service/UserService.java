@@ -297,6 +297,7 @@ public class UserService {
 
     public List<UserDto> getUser(UserSearch search) {
     	 List<UserDto> userList = new ArrayList<UserDto>();
+    	 int totalCount;
     	try {           
             Session session = entityManager.unwrap(Session.class);
 
@@ -314,7 +315,11 @@ public class UserService {
                 criteria.add(Restrictions.eq("mobile", search.getMobile()));
             }
 
-            List<User> list = criteria.list();
+            totalCount=criteria.list().size();
+            
+            List<User> list = criteria.setFirstResult(search.getFirstResult()).setMaxResults(search.getItemsPerPage()).list();
+            
+            
 
             for (User entityObject : list) {
                 UserDto userDto = (UserDto) ModelEntityMapper.converObjectToPoJo(entityObject, UserDto.class);

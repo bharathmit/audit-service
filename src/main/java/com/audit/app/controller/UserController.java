@@ -1,6 +1,7 @@
 package com.audit.app.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -62,8 +63,12 @@ public class UserController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(method = RequestMethod.GET, produces = { MediaType.APPLICATION_JSON_VALUE })
-	public List<UserDto> getAllUser() {
+	public List<UserDto> getAllUser(@RequestParam Map<String, String> parameters) {
 		UserSearch searchObject=new UserSearch();
+		
+		searchObject.setItemsPerPage(Integer.parseInt(parameters.get("itemsPerPage")));
+		searchObject.setPageNumber(Integer.parseInt(parameters.get("pageNumber")));
+		
 		return userService.getUser(searchObject);
 	}
 	
