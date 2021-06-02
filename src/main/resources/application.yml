@@ -5,15 +5,15 @@ spring:
     
   mail:
     default-encoding: UTF-8
-    host: ENC(BiDJPbNehF3MCSqTbQHvfm/5Xv0TNeAF962e08MSZ4tw2D3pf4ysag==)
-    username: ENC(BkRSbyEvYfFQHNmKaAklfip9d7m8Gpa80ReAXB0HLzKH9l/zYhMOFQ==)
-    password: ENC(uXmTSPW8IzMHKYIhGxtJ0U5TuO4do4J3v5A9b62UhZE=)
+    host: ENC(F9az8dfwKJf/rTenYWkJf4D90MG16MASGoebZeHv9FA=)
+    username: ENC(RAJthPGhXLnsY/xW71xSWMRKNGBZ1fGDJc6eSSeKXR8=)
+    password: ENC(J+qGuXFPsth3n/qK7lyb1ssQZKuKMIczxeUzzauI0khPHMuETuXfUdpFQ+xsW1xbnm1J6lBLXlUzadV5cUfCLA==)
     port: 587
     protocol: smtp
     test-connection: false
     properties.mail.smtp.auth: true
     properties.mail.smtp.starttls.enable: true
-    mail.smtp.ssl.trust: ENC(BiDJPbNehF3MCSqTbQHvfm/5Xv0TNeAF962e08MSZ4tw2D3pf4ysag==)  
+    mail.smtp.ssl.trust: ENC(F9az8dfwKJf/rTenYWkJf4D90MG16MASGoebZeHv9FA=)  
           
 info:
   app:
